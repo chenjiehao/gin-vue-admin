@@ -8,6 +8,20 @@
 
 提供一个**干净的、可扩展的 RBAC 管理系统骨架**，包含用户认证、权限管理、菜单路由、API 管理等基础能力，去除所有业务相关模块。
 
+## Current State
+
+**v1.0 精简脚手架** 已完成 (shipped 2026-04-21)
+
+- 后端：删除了 example 模块和插件（announcement, email）
+- 前端：删除了 example 视图和 API
+- 数据：清理了示例初始化数据，保留 admin/123456
+
+**默认账号:** admin / 123456
+
+## Next Milestone Goals
+
+（待定义 — 使用 `/gsd:new-milestone` 开始下一个里程碑）
+
 ## Requirements
 
 ### Validated
@@ -94,4 +108,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-21 after Phase 3 completion*
+*Last updated: 2026-04-21 after v1.0 milestone completion*
