@@ -27,14 +27,18 @@
 - ✓ **请求日志** — 操作记录中间件
 - ✓ **CORS 配置** — 跨域请求支持
 
+### Validated
+
+- ✓ **CORE-01**: 清理所有示例模块（example 模块）— Phase 1
+- ✓ **CORE-02**: 清理所有业务相关菜单和权限数据 — Phase 3
+- ✓ **CORE-03**: 保留最小用户表结构（仅保留登录必需字段）
+- ✓ **CORE-04**: 保留完整的权限框架（Casbin + 菜单 + API）
+- ✓ **CORE-05**: 保留插件系统入口
+- ✓ **CORE-06**: 前端移除所有业务页面，只保留登录页和框架布局 — Phase 2
+
 ### Active
 
-- [ ] **CORE-01**: 清理所有示例模块（example 模块）
-- [ ] **CORE-02**: 清理所有业务相关菜单和权限数据
-- [ ] **CORE-03**: 保留最小用户表结构（仅保留登录必需字段）
-- [ ] **CORE-04**: 保留完整的权限框架（Casbin + 菜单 + API）
-- [ ] **CORE-05**: 保留插件系统入口
-- [ ] **CORE-06**: 前端移除所有业务页面，只保留登录页和框架布局
+（无 — 所有需求已验证完成）
 
 ### Out of Scope
 
@@ -66,9 +70,9 @@
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| 只保留最小框架 | 脚手架应该干净，去掉业务干扰 | — Pending |
-| 保留完整权限体系 | 二次开发都需要 RBAC 能力 | — Pending |
-| 前端只留登录和框架 | 最小可用 UI 骨架 | — Pending |
+| 只保留最小框架 | 脚手架应该干净，去掉业务干扰 | ✓ Phase 1-3 完成 |
+| 保留完整权限体系 | 二次开发都需要 RBAC 能力 | ✓ 验证通过 |
+| 前端只留登录和框架 | 最小可用 UI 骨架 | ✓ Phase 2 完成 |
 
 ---
 
@@ -90,4 +94,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-21 after initialization*
+*Last updated: 2026-04-21 after Phase 3 completion*
