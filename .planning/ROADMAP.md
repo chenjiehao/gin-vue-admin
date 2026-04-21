@@ -33,7 +33,7 @@
 | 4. 首页仪表盘 UI 重设计 | v1.1 | 0/1 | Planned | — |
 
 Plans:
-- [ ] 04-01-PLAN.md — 简化 Dashboard 只保留居中标题
+- [x] 04-01-PLAN.md — 简化 Dashboard 只保留居中标题
 
 ---
 
