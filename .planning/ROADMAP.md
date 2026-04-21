@@ -53,7 +53,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: 删除 web/src/view/example/ 和 web/src/api/example.js
+- [x] 02-01: 删除 web/src/view/example/ 和 web/src/api/example.js
 - [ ] 02-02: 验证前端框架功能（登录、主布局、动态路由、框架API调用）
 
 ### Phase 3: Data Cleanup
@@ -78,5 +78,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Backend Cleanup | 3/3 | Complete   | 2026-04-21 |
-| 2. Frontend Cleanup | 0/2 | Not started | - |
+| 2. Frontend Cleanup | 1/2 | In progress | - |
 | 3. Data Cleanup | 0/1 | Not started | - |
