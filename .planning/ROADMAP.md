@@ -3,6 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 精简脚手架** — Phases 1-3 (shipped 2026-04-21)
+- 🔄 **v1.1 功能增强** — Phase 4+ (in progress)
 
 ## Phases
 
@@ -15,6 +16,13 @@
 
 </details>
 
+<details open>
+<summary>🔄 v1.1 功能增强 (Phase 4) — IN PROGRESS</summary>
+
+- [ ] Phase 4: 首页仪表盘 UI 重设计 (0/1 plans) — in progress
+
+</details>
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -22,6 +30,7 @@
 | 1. Backend Cleanup | v1.0 | 3/3 | Complete | 2026-04-21 |
 | 2. Frontend Cleanup | v1.0 | 2/2 | Complete | 2026-04-21 |
 | 3. Data Cleanup | v1.0 | 1/1 | Complete | 2026-04-21 |
+| 4. 首页仪表盘 UI 重设计 | v1.1 | 0/1 | Planned | — |
 
 ---
 
