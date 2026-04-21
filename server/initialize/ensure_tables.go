@@ -3,9 +3,7 @@ package initialize
 import (
 	"context"
 	adapter "github.com/casbin/gorm-adapter/v3"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/example"
 	sysModel "github.com/flipped-aurora/gin-vue-admin/server/model/system"
-	"github.com/flipped-aurora/gin-vue-admin/server/plugin/announcement/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/system"
 	"gorm.io/gorm"
 )
@@ -59,14 +57,6 @@ func (e *ensureTables) MigrateTable(ctx context.Context) (context.Context, error
 		sysModel.SysLoginLog{},
 		sysModel.SysApiToken{},
 		adapter.CasbinRule{},
-
-		example.ExaFile{},
-		example.ExaCustomer{},
-		example.ExaFileChunk{},
-		example.ExaFileUploadAndDownload{},
-		example.ExaAttachmentCategory{},
-
-		model.Info{},
 	}
 	for _, t := range tables {
 		_ = db.AutoMigrate(&t)
@@ -101,14 +91,6 @@ func (e *ensureTables) TableCreated(ctx context.Context) bool {
 		sysModel.JoinTemplate{},
 
 		adapter.CasbinRule{},
-
-		example.ExaFile{},
-		example.ExaCustomer{},
-		example.ExaFileChunk{},
-		example.ExaFileUploadAndDownload{},
-		example.ExaAttachmentCategory{},
-
-		model.Info{},
 	}
 	yes := true
 	for _, t := range tables {
