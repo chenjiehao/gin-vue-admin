@@ -19,7 +19,7 @@
 <details open>
 <summary>🔄 v1.1 功能增强 (Phase 4) — IN PROGRESS</summary>
 
-- [ ] Phase 4: 首页仪表盘 UI 重设计 (0/1 plans) — in progress
+- [ ] Phase 4: 首页仪表盘 UI 重设计 (1/1 plans) — in progress
 
 </details>
 
@@ -31,6 +31,9 @@
 | 2. Frontend Cleanup | v1.0 | 2/2 | Complete | 2026-04-21 |
 | 3. Data Cleanup | v1.0 | 1/1 | Complete | 2026-04-21 |
 | 4. 首页仪表盘 UI 重设计 | v1.1 | 0/1 | Planned | — |
+
+Plans:
+- [ ] 04-01-PLAN.md — 简化 Dashboard 只保留居中标题
 
 ---
 
