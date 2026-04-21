@@ -6,7 +6,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Backend Cleanup** - 删除后端示例模块，保留核心框架
+- [x] **Phase 1: Backend Cleanup** - 删除后端示例模块，保留核心框架 (completed 2026-04-21)
 - [ ] **Phase 2: Frontend Cleanup** - 删除前端业务页面，保留框架骨架
 - [ ] **Phase 3: Data Cleanup** - 清理数据库初始化中的示例数据
 
@@ -34,9 +34,9 @@
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: 删除 server/model/example/、server/api/v1/example/、server/service/example/、server/router/example/
+- [x] 01-01: 删除 server/model/example/、server/api/v1/example/、server/service/example/、server/router/example/
 - [ ] 01-02: 删除 server/plugin/announcement/ 和 server/plugin/email/
-- [ ] 01-03: 验证核心框架功能（用户、角色、菜单、API管理 + JWT + Casbin + Swagger）
+- [x] 01-03: 验证核心框架功能（用户、角色、菜单、API管理 + JWT + Casbin + Swagger）
 
 ### Phase 2: Frontend Cleanup
 **Goal**: 前端所有示例页面和API已删除，只保留框架登录页和主布局
@@ -77,6 +77,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Backend Cleanup | 0/3 | Not started | - |
+| 1. Backend Cleanup | 3/3 | Complete   | 2026-04-21 |
 | 2. Frontend Cleanup | 0/2 | Not started | - |
 | 3. Data Cleanup | 0/1 | Not started | - |
