@@ -60,10 +60,31 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CLEAN-01 ~ CLEAN-08 | Phase 1 | Pending |
-| CORE-01 ~ CORE-08 | Phase 1 | Pending |
-| FRONT-01 ~ FRONT-05 | Phase 2 | Pending |
-| DATA-01 ~ DATA-04 | Phase 2 | Pending |
+| CLEAN-01 | Phase 1 | Pending |
+| CLEAN-02 | Phase 1 | Pending |
+| CLEAN-03 | Phase 1 | Pending |
+| CLEAN-04 | Phase 1 | Pending |
+| CLEAN-07 | Phase 1 | Pending |
+| CLEAN-08 | Phase 1 | Pending |
+| CORE-01 | Phase 1 | Pending |
+| CORE-02 | Phase 1 | Pending |
+| CORE-03 | Phase 1 | Pending |
+| CORE-04 | Phase 1 | Pending |
+| CORE-05 | Phase 1 | Pending |
+| CORE-06 | Phase 1 | Pending |
+| CORE-07 | Phase 1 | Pending |
+| CORE-08 | Phase 1 | Pending |
+| CLEAN-05 | Phase 2 | Pending |
+| CLEAN-06 | Phase 2 | Pending |
+| FRONT-01 | Phase 2 | Pending |
+| FRONT-02 | Phase 2 | Pending |
+| FRONT-03 | Phase 2 | Pending |
+| FRONT-04 | Phase 2 | Pending |
+| FRONT-05 | Phase 2 | Pending |
+| DATA-01 | Phase 3 | Pending |
+| DATA-02 | Phase 3 | Pending |
+| DATA-03 | Phase 3 | Pending |
+| DATA-04 | Phase 3 | Pending |
 
 **Coverage:**
 - v1 requirements: 22 total
@@ -72,4 +93,4 @@
 
 ---
 *Requirements defined: 2026-04-21*
-*Last updated: 2026-04-21 after initial definition*
+*Last updated: 2026-04-21 after roadmap created*
