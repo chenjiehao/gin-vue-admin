@@ -36,7 +36,8 @@
 <details open>
 <summary>🔄 v1.3 数据集成 - 离线同步 — IN PROGRESS</summary>
 
-- [ ] Phase 6: 离线同步功能 (0/0 plans) — planned
+- [ ] Phase 6: 离线同步功能 (1/1 plans) — in progress
+  - [ ] 06-01-PLAN.md — 创建离线同步Vue页面 + API stubs + 菜单
 
 </details>
 
@@ -49,7 +50,7 @@
 | 3. Data Cleanup | v1.0 | 1/1 | Complete | 2026-04-21 |
 | 4. 首页仪表盘 UI 重设计 | v1.1 | 1/1 | Complete | 2026-04-22 |
 | 5. 恢复审计日志菜单 + 新增数据集成模版一级菜单 | v1.2 | 1/1 | Complete | 2026-04-22 |
-| 6. 离线同步功能 | v1.3 | 0/0 | Planned | — |
+| 6. 离线同步功能 | v1.3 | 0/1 | In Progress | — |
 
 ---
 
