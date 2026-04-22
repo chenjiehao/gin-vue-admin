@@ -28,6 +28,7 @@
 <summary>✅ v1.2 菜单与数据集成 (Phase 5) — SHIPPED 2026-04-22</summary>
 
 - [x] Phase 5: 恢复审计日志菜单 + 新增数据集成模版一级菜单 (1/1 plans) — completed 2026-04-22
+- [x] Phase 5 (额外): 数据集成模版菜单优化 — 2026-04-22
 
 </details>
 
