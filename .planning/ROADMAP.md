@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 精简脚手架** — Phases 1-3 (shipped 2026-04-21)
 - ✅ **v1.1 功能增强** — Phase 4 (shipped 2026-04-22)
-- 🔄 **v1.2 待规划** — (in progress)
+- 🔄 **v1.2 待规划** — Phase 5 (in progress)
 
 ## Phases
 
@@ -27,7 +27,7 @@
 <details open>
 <summary>🔄 v1.2 待规划 — IN PROGRESS</summary>
 
-- [ ] Phase 5: (pending)
+- [ ] Phase 5: 恢复审计日志菜单 + 新增数据集成模版一级菜单 (0/0 plans) — in progress
 
 </details>
 
@@ -39,7 +39,10 @@
 | 2. Frontend Cleanup | v1.0 | 2/2 | Complete | 2026-04-21 |
 | 3. Data Cleanup | v1.0 | 1/1 | Complete | 2026-04-21 |
 | 4. 首页仪表盘 UI 重设计 | v1.1 | 1/1 | Complete | 2026-04-22 |
-| 5. (pending) | v1.2 | 0/0 | Planned | — |
+| 5. 恢复审计日志菜单 + 新增数据集成模版一级菜单 | v1.2 | 0/0 | Planned | — |
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 5 to break down)
 
 ---
 

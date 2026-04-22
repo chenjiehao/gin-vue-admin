@@ -64,6 +64,7 @@ Progress: [████████████████████] 100%
 ### Roadmap Evolution
 
 - Phase 4 added: 首页仪表盘 UI 重设计
+- Phase 5 added: 恢复审计日志菜单 + 新增数据集成模版一级菜单
 
 ### Decisions
 
