@@ -4,13 +4,13 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 09 context gathered
-last_updated: "2026-04-22T06:40:43.481Z"
+last_updated: "2026-04-22T06:55:17.362Z"
 last_activity: 2026-04-22
 progress:
   total_phases: 1
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
   percent: 90
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-21)
 
 **Core value:** 提供一个干净的、可扩展的 RBAC 管理系统骨架
-**Current focus:** Phase 08 — datasource-management
+**Current focus:** Phase 09 — fix-menu-generation
 
 ## Current Position
 
-Phase: 8
+Phase: 09
 Plan: Not started
-Status: Executing Phase 08
+Status: Executing Phase 09
 Last activity: 2026-04-22
 
 Progress: [████████████████░░] 90%
