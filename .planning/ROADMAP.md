@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 精简脚手架** — Phases 1-3 (shipped 2026-04-21)
 - ✅ **v1.1 功能增强** — Phase 4 (shipped 2026-04-22)
-- 🔄 **v1.2 待规划** — Phase 5 (in progress)
+- ✅ **v1.2 菜单与数据集成** — Phase 5 (shipped 2026-04-22)
 
 ## Phases
 
@@ -24,10 +24,10 @@
 
 </details>
 
-<details open>
-<summary>🔄 v1.2 待规划 — IN PROGRESS</summary>
+<details>
+<summary>✅ v1.2 菜单与数据集成 (Phase 5) — SHIPPED 2026-04-22</summary>
 
-- [ ] Phase 5: 恢复审计日志菜单 + 新增数据集成模版一级菜单 (1/1 plans) — planned
+- [x] Phase 5: 恢复审计日志菜单 + 新增数据集成模版一级菜单 (1/1 plans) — completed 2026-04-22
 
 </details>
 
@@ -39,10 +39,7 @@
 | 2. Frontend Cleanup | v1.0 | 2/2 | Complete | 2026-04-21 |
 | 3. Data Cleanup | v1.0 | 1/1 | Complete | 2026-04-21 |
 | 4. 首页仪表盘 UI 重设计 | v1.1 | 1/1 | Complete | 2026-04-22 |
-| 5. 恢复审计日志菜单 + 新增数据集成模版一级菜单 | v1.2 | 1/1 | Planned | — |
-
-Plans:
-- [x] 05-01-PLAN.md — 插入审计日志和数据集成模版菜单记录
+| 5. 恢复审计日志菜单 + 新增数据集成模版一级菜单 | v1.2 | 1/1 | Complete | 2026-04-22 |
 
 ---
 

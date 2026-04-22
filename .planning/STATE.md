@@ -1,13 +1,13 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: executing
-stopped_at: Completed 03-01 - cleanup init data
-last_updated: "2026-04-22T01:47:31.666Z"
+milestone: v1.2
+milestone_name: 菜单与数据集成
+status: completed
+stopped_at: Completed Phase 05 - 菜单与数据集成
+last_updated: "2026-04-22T01:52:00.000Z"
 last_activity: 2026-04-22
 progress:
-  total_phases: 6
+  total_phases: 5
   completed_phases: 5
   total_plans: 8
   completed_plans: 8
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-21)
 
 **Core value:** 提供一个干净的、可扩展的 RBAC 管理系统骨架
-**Current focus:** Phase 04 — dashboard-ui
+**Current focus:** All milestones complete
 
 ## Current Position
 
-Phase: 05
-Plan: Not started
-Status: Executing Phase 04
+Phase: 05 (v1.2 菜单与数据集成)
+Plan: All complete
+Status: Milestone v1.2 shipped
 Last activity: 2026-04-22
 
 Progress: [████████████████████] 100%
@@ -58,6 +58,8 @@ Progress: [████████████████████] 100%
 | Phase 02 P01 | 6 | 6 tasks | 6 files |
 | Phase 02 P02 | 480 | 5 tasks | 0 files |
 | Phase 03 P01 | 1 | 5 tasks | 4 files |
+| Phase 04 P01 | 1 | 1 task | 1 file |
+| Phase 05 P01 | 1 | 2 tasks | 0 files |
 
 ## Accumulated Context
 
@@ -65,6 +67,7 @@ Progress: [████████████████████] 100%
 
 - Phase 4 added: 首页仪表盘 UI 重设计
 - Phase 5 added: 恢复审计日志菜单 + 新增数据集成模版一级菜单
+- v1.0, v1.1, v1.2 completed
 
 ### Decisions
 
