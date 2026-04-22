@@ -66,14 +66,14 @@
 | 9. 修复菜单生成逻辑：禁止为二级菜单下的非菜单页面自动添加菜单项 | v1.3 | 1/1 | Complete | 2026-04-22 |
 | 10. 修复数据源和离线同步表单页无法访问的问题 | v1.3 | 1/1 | Complete | 2026-04-22 |
 | 11. 将表单页从全页跳转改为右侧 div 局部加载 | v1.3 | 1/1 | Complete | 2026-04-22 |
-| 12. 数据源管理的增强 | v1.3 | 1/3 | In Progress|  |
+| 12. 数据源管理的增强 | v1.3 | 2/3 | In Progress|  |
 
 ### Phase 12: 数据源管理的增强
 
 **Goal:** 增强数据源管理功能 — 在 Phase 8/11 完成的 CRUD 基础上，新增连接测试和批量操作能力
 **Requirements**: DS-01, DS-02, DS-03, DS-04, DS-05, DS-06, DS-07
 **Depends on:** Phase 11
-**Plans:** 1/3 plans executed
+**Plans:** 2/3 plans executed
 
 Plans:
 - [x] 12-01-PLAN.md — 后端连接测试 API + Service 层逻辑 (Wave 1)
