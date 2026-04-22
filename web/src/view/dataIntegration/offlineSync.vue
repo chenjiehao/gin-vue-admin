@@ -21,7 +21,7 @@
     </div>
     <div class="gva-table-box">
       <div class="gva-btn-list">
-        <el-button icon="plus" type="primary" @click="openDrawer('create')">新增任务</el-button>
+        <el-button icon="plus" type="primary" @click="goCreate">新增任务</el-button>
         <el-button icon="refresh" @click="getTableData">刷新</el-button>
       </div>
       <el-table
@@ -65,7 +65,7 @@
         </el-table-column>
         <el-table-column align="left" label="操作" min-width="180">
           <template #default="scope">
-            <el-button icon="edit" type="primary" link @click="openDrawer('edit', scope.row)">编辑</el-button>
+            <el-button icon="edit" type="primary" link @click="goEdit(scope.row)">编辑</el-button>
             <el-button icon="delete" type="primary" link @click="deleteTask(scope.row)">删除</el-button>
             <el-button icon="video-play" type="primary" link @click="handleTriggerSync(scope.row)">触发</el-button>
             <el-button icon="histogram" type="primary" link @click="viewHistory(scope.row)">历史</el-button>
@@ -84,49 +84,6 @@
         />
       </div>
     </div>
-
-    <!-- 新增/编辑抽屉 -->
-    <el-drawer v-model="drawerVisible" :title="drawerTitle" size="50%" :before-close="handleDrawerClose" destroy-on-close>
-      <el-form ref="taskFormRef" :model="taskForm" :rules="taskRules" label-width="120px">
-        <el-form-item label="任务名称" prop="taskName">
-          <el-input v-model="taskForm.taskName" placeholder="请输入任务名称" />
-        </el-form-item>
-        <el-form-item label="源类型" prop="sourceType">
-          <el-select v-model="taskForm.sourceType" placeholder="请选择源类型">
-            <el-option label="MySQL" value="MySQL" />
-            <el-option label="PostgreSQL" value="PostgreSQL" />
-            <el-option label="API" value="API" />
-            <el-option label="File" value="File" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="源配置" prop="sourceConfig">
-          <el-input v-model="taskForm.sourceConfig" type="textarea" placeholder="请输入源配置(JSON)" :rows="3" />
-        </el-form-item>
-        <el-form-item label="目标类型" prop="targetType">
-          <el-select v-model="taskForm.targetType" placeholder="请选择目标类型">
-            <el-option label="MySQL" value="MySQL" />
-            <el-option label="Elasticsearch" value="Elasticsearch" />
-            <el-option label="API" value="API" />
-            <el-option label="File" value="File" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="目标配置" prop="targetConfig">
-          <el-input v-model="taskForm.targetConfig" type="textarea" placeholder="请输入目标配置(JSON)" :rows="3" />
-        </el-form-item>
-        <el-form-item label="字段映射" prop="mappingRules">
-          <el-input v-model="taskForm.mappingRules" type="textarea" placeholder="请输入字段映射规则(JSON)" :rows="3" />
-        </el-form-item>
-        <el-form-item label="CRON表达式" prop="cronExpression">
-          <el-input v-model="taskForm.cronExpression" placeholder="如: 0 0 * * * * (每天零点)" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div style="flex: 1">
-          <el-button @click="handleDrawerClose">取消</el-button>
-          <el-button type="primary" @click="saveTask">确定</el-button>
-        </div>
-      </template>
-    </el-drawer>
 
     <!-- 同步历史对话框 -->
     <el-dialog v-model="historyDialogVisible" title="同步历史" width="60%" :before-close="handleHistoryDialogClose" destroy-on-close>
@@ -172,11 +129,14 @@
   } from '@/api/offlineSync'
   import { formatDate } from '@/utils/format'
   import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
   import { ElMessage, ElMessageBox } from 'element-plus'
 
   defineOptions({
     name: 'OfflineSync'
   })
+
+  const router = useRouter()
 
   // 模拟数据
   const mockTableData = [
@@ -256,26 +216,13 @@
   const searchInfo = ref({})
   const multipleSelection = ref([])
 
-  // 抽屉相关
-  const drawerVisible = ref(false)
-  const drawerTitle = ref('')
-  const dialogFlag = ref('')
-  const taskFormRef = ref(null)
-  const taskForm = ref({
-    id: null,
-    taskName: '',
-    sourceType: '',
-    sourceConfig: '',
-    targetType: '',
-    targetConfig: '',
-    mappingRules: '',
-    cronExpression: ''
-  })
+  // 路由跳转
+  const goCreate = () => {
+    router.push({ name: 'OfflineSyncForm' })
+  }
 
-  const taskRules = {
-    taskName: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
-    sourceType: [{ required: true, message: '请选择源类型', trigger: 'change' }],
-    targetType: [{ required: true, message: '请选择目标类型', trigger: 'change' }]
+  const goEdit = (row) => {
+    router.push({ name: 'OfflineSyncForm', query: { id: row.id } })
   }
 
   // 历史对话框相关
@@ -345,55 +292,6 @@
   // 多选
   const handleSelectionChange = (val) => {
     multipleSelection.value = val
-  }
-
-  // 抽屉操作
-  const openDrawer = (flag, row) => {
-    dialogFlag.value = flag
-    if (flag === 'edit' && row) {
-      drawerTitle.value = '编辑任务'
-      taskForm.value = {
-        id: row.id,
-        taskName: row.taskName,
-        sourceType: row.sourceType,
-        sourceConfig: JSON.stringify({ host: 'localhost', port: 3306 }, null, 2),
-        targetType: row.targetType,
-        targetConfig: JSON.stringify({ host: 'localhost', port: 9200 }, null, 2),
-        mappingRules: JSON.stringify([{ source: 'id', target: '_id' }], null, 2),
-        cronExpression: '0 0 * * * *'
-      }
-    } else {
-      drawerTitle.value = '新增任务'
-      taskForm.value = {
-        id: null,
-        taskName: '',
-        sourceType: '',
-        sourceConfig: '',
-        targetType: '',
-        targetConfig: '',
-        mappingRules: '',
-        cronExpression: ''
-      }
-    }
-    drawerVisible.value = true
-  }
-
-  const handleDrawerClose = () => {
-    drawerVisible.value = false
-  }
-
-  const saveTask = async () => {
-    if (!taskFormRef.value) return
-    await taskFormRef.value.validate(async (valid) => {
-      if (valid) {
-        ElMessage({
-          type: 'success',
-          message: dialogFlag.value === 'create' ? '创建成功' : '更新成功'
-        })
-        drawerVisible.value = false
-        getTableData()
-      }
-    })
   }
 
   // 删除任务
