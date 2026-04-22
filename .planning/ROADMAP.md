@@ -5,7 +5,7 @@
 - ✅ **v1.0 精简脚手架** — Phases 1-3 (shipped 2026-04-21)
 - ✅ **v1.1 功能增强** — Phase 4 (shipped 2026-04-22)
 - ✅ **v1.2 菜单与数据集成** — Phase 5 (shipped 2026-04-22)
-- 🔄 **v1.3 数据集成 - 离线同步** — Phase 6 (in progress)
+- ✅ **v1.3 数据集成 - 离线同步** — Phases 6-11 (shipped 2026-04-22)
 
 ## Phases
 
@@ -34,7 +34,7 @@
 </details>
 
 <details>
-<summary>🔄 v1.3 数据集成 - 离线同步 — IN PROGRESS</summary>
+<summary>✅ v1.3 数据集成 - 离线同步 — SHIPPED 2026-04-22</summary>
 
 - [x] Phase 6: 离线同步功能 (1/1 plans) — completed 2026-04-22
   - [x] 06-01-PLAN.md — 创建离线同步Vue页面 + API stubs + 菜单
@@ -42,8 +42,12 @@
   - [x] 07-01-PLAN.md — 修复 permission.js 路由重定向逻辑，hidden 子菜单不再导致异常跳转
 - [x] Phase 8: 数据源管理 (1/1 plans) — completed 2026-04-22
   - [x] 08-01-PLAN.md — 在数据集成菜单下新建数据源管理二级菜单
-- [ ] Phase 9: 修复菜单生成逻辑 (1/1 plans) — pending
-  - [ ] 09-01-PLAN.md — 清理错误创建的表单页菜单记录
+- [x] Phase 9: 修复菜单生成逻辑 (1/1 plans) — completed 2026-04-22
+  - [x] 09-01-PLAN.md — 清理错误创建的表单页菜单记录
+- [x] Phase 10: 修复数据源和离线同步表单页无法访问的问题 (1/1 plans) — completed 2026-04-22
+  - [x] 10-01-PLAN.md — 注册表单页静态路由
+- [x] Phase 11: 将表单页从全页跳转改为整块替换加载 (1/1 plans) — completed 2026-04-22
+  - [x] 11-01-PLAN.md — 重构列表页，整块替换为表单视图，多列网格布局
 
 </details>
 
@@ -59,17 +63,22 @@
 | 6. 离线同步功能 | v1.3 | 1/1 | Complete | 2026-04-22 |
 | 7. 优化离线同步默认列表展示 | v1.3 | 1/1 | Complete | 2026-04-22 |
 | 8. 数据源管理 | v1.3 | 1/1 | Complete | 2026-04-22 |
-| 9. 修复菜单生成逻辑：禁止为二级菜单下的非菜单页面自动添加菜单项 | v1.3 | 0/1 | Not planned | — |
+| 9. 修复菜单生成逻辑：禁止为二级菜单下的非菜单页面自动添加菜单项 | v1.3 | 1/1 | Complete | 2026-04-22 |
+| 10. 修复数据源和离线同步表单页无法访问的问题 | v1.3 | 1/1 | Complete | 2026-04-22 |
+| 11. 将表单页从全页跳转改为右侧 div 局部加载 | v1.3 | 1/1 | Complete | 2026-04-22 |
+| 12. 数据源管理的增强 | v1.3 | 3/3 | In Progress | - |
 
-### Phase 9: 修复菜单生成逻辑：禁止为二级菜单下的非菜单页面自动添加菜单项
+### Phase 12: 数据源管理的增强
 
-**Goal:** 从数据库删除 offlineSyncForm (id=14) 和 dataSourceForm (id=16) 的错误菜单记录
-**Requirements:** N/A (数据清理任务)
-**Depends on:** Phase 8
-**Plans:** 1 plan
+**Goal:** 增强数据源管理功能 — 在 Phase 8/11 完成的 CRUD 基础上，新增连接测试和批量操作能力
+**Requirements**: DS-01, DS-02, DS-03, DS-04, DS-05, DS-06, DS-07
+**Depends on:** Phase 11
+**Plans:** 3/3 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — 清理错误创建的表单页菜单记录
+- [x] 12-01-PLAN.md — 后端连接测试 API + Service 层逻辑 (Wave 1)
+- [x] 12-02-PLAN.md — 后端批量操作 API + Service 层逻辑 (Wave 2)
+- [x] 12-03-PLAN.md — 前端连接测试 UI + 批量操作 UI (Wave 3)
 
 ---
 
