@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: 数据集成-离线同步
-status: in_progress
-stopped_at: Completed v1.2
-last_updated: "2026-04-22T02:10:00.000Z"
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: Completed Phase 05 - 数据集成模版菜单优化
+last_updated: "2026-04-22T02:47:21.207Z"
 last_activity: 2026-04-22
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 8
-  completed_plans: 8
+  total_phases: 7
+  completed_phases: 6
+  total_plans: 9
+  completed_plans: 9
   percent: 100
 ---
 
@@ -25,7 +25,7 @@ See: .planning/PROJECT.md (updated 2026-04-21)
 
 ## Current Position
 
-Phase: 06 (v1.3 数据集成-离线同步)
+Phase: 06
 Plan: Not started
 Status: In progress
 Last activity: 2026-04-22
