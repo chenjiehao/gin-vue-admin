@@ -1,10 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: 菜单与数据集成
-status: completed
-stopped_at: Completed Phase 05 - 菜单与数据集成
-last_updated: "2026-04-22T01:52:00.000Z"
+milestone: v1.3
+milestone_name: 数据集成-离线同步
+status: in_progress
+stopped_at: Completed v1.2
+last_updated: "2026-04-22T02:10:00.000Z"
 last_activity: 2026-04-22
 progress:
   total_phases: 5
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-21)
 
 **Core value:** 提供一个干净的、可扩展的 RBAC 管理系统骨架
-**Current focus:** All milestones complete
+**Current focus:** v1.3 数据集成 - 离线同步
 
 ## Current Position
 
-Phase: 05 (v1.2 菜单与数据集成)
-Plan: All complete
-Status: Milestone v1.2 shipped
+Phase: 06 (v1.3 数据集成-离线同步)
+Plan: Not started
+Status: In progress
 Last activity: 2026-04-22
 
 Progress: [████████████████████] 100%
@@ -67,6 +67,7 @@ Progress: [████████████████████] 100%
 - Phase 4 added: 首页仪表盘 UI 重设计
 - Phase 5 added: 恢复审计日志菜单 + 新增数据集成模版一级菜单
 - v1.0, v1.1, v1.2 completed
+- Phase 6 added: v1.3 数据集成 - 离线同步
 
 ### Decisions
 

@@ -5,6 +5,7 @@
 - ✅ **v1.0 精简脚手架** — Phases 1-3 (shipped 2026-04-21)
 - ✅ **v1.1 功能增强** — Phase 4 (shipped 2026-04-22)
 - ✅ **v1.2 菜单与数据集成** — Phase 5 (shipped 2026-04-22)
+- 🔄 **v1.3 数据集成 - 离线同步** — Phase 6 (in progress)
 
 ## Phases
 
@@ -32,6 +33,13 @@
 
 </details>
 
+<details open>
+<summary>🔄 v1.3 数据集成 - 离线同步 — IN PROGRESS</summary>
+
+- [ ] Phase 6: 离线同步功能 (0/0 plans) — planned
+
+</details>
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -41,6 +49,7 @@
 | 3. Data Cleanup | v1.0 | 1/1 | Complete | 2026-04-21 |
 | 4. 首页仪表盘 UI 重设计 | v1.1 | 1/1 | Complete | 2026-04-22 |
 | 5. 恢复审计日志菜单 + 新增数据集成模版一级菜单 | v1.2 | 1/1 | Complete | 2026-04-22 |
+| 6. 离线同步功能 | v1.3 | 0/0 | Planned | — |
 
 ---
 
