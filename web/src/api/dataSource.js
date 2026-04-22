@@ -127,3 +127,19 @@ export const batchUpdateStatus = (data) => {
     data
   })
 }
+
+// @Tags DataSource
+// @Summary 获取数据源表列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param dataSourceId query string true "数据源ID"
+// @Success 200 {string} string "{"code":0,"data":{"tables":[]},"msg":"获取成功"}"
+// @Router /dataSource/getTables [get]
+export const getDataSourceTables = (dataSourceId) => {
+  return service({
+    url: '/dataSource/getTables',
+    method: 'get',
+    params: { dataSourceId }
+  })
+}

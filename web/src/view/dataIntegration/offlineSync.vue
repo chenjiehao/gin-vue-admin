@@ -1,120 +1,286 @@
 <template>
   <div>
-    <div class="gva-search-box">
-      <el-form :inline="true" :model="searchInfo">
-        <el-form-item label="任务名称">
-          <el-input v-model="searchInfo.taskName" placeholder="搜索任务名称" />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="searchInfo.status" placeholder="请选择状态" clearable>
-            <el-option label="待执行" value="pending" />
-            <el-option label="运行中" value="running" />
-            <el-option label="成功" value="success" />
-            <el-option label="失败" value="failed" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="search" @click="onSubmit">查询</el-button>
-          <el-button icon="refresh" @click="onReset">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="gva-table-box">
-      <div class="gva-btn-list">
-        <el-button icon="plus" type="primary" @click="goCreate">新增任务</el-button>
-        <el-button icon="refresh" @click="getTableData">刷新</el-button>
+    <!-- 列表视图 -->
+    <div v-if="!formVisible">
+      <div class="gva-search-box">
+        <el-form :inline="true" :model="searchInfo">
+          <el-form-item label="任务名称">
+            <el-input v-model="searchInfo.taskName" placeholder="搜索任务名称" />
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select v-model="searchInfo.status" placeholder="请选择状态" clearable>
+              <el-option label="待执行" value="pending" />
+              <el-option label="运行中" value="running" />
+              <el-option label="成功" value="success" />
+              <el-option label="失败" value="failed" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="search" @click="onSubmit">查询</el-button>
+            <el-button icon="refresh" @click="onReset">重置</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-      <el-table
-        ref="multipleTable"
-        :data="tableData"
-        style="width: 100%"
-        tooltip-effect="dark"
-        row-key="id"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column align="left" type="selection" width="55" />
-        <el-table-column align="left" label="任务名称" prop="taskName" width="180">
-          <template #default="scope">
-            <el-link type="primary" :underline="false">{{ scope.row.taskName }}</el-link>
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="源类型" prop="sourceType" width="100">
-          <template #default="scope">
-            <el-tag>{{ scope.row.sourceType }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="目标类型" prop="targetType" width="100">
-          <template #default="scope">
-            <el-tag>{{ scope.row.targetType }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="状态" prop="status" width="100">
-          <template #default="scope">
-            <el-tag :type="getStatusType(scope.row.status)">{{ getStatusLabel(scope.row.status) }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="上次同步时间" prop="lastSyncTime" width="180">
-          <template #default="scope">
-            {{ scope.row.lastSyncTime ? formatDate(scope.row.lastSyncTime) : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="下次同步时间" prop="nextSyncTime" width="180">
-          <template #default="scope">
-            {{ scope.row.nextSyncTime ? formatDate(scope.row.nextSyncTime) : '-' }}
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="操作" min-width="180">
-          <template #default="scope">
-            <el-button icon="edit" type="primary" link @click="goEdit(scope.row)">编辑</el-button>
-            <el-button icon="delete" type="primary" link @click="deleteTask(scope.row)">删除</el-button>
-            <el-button icon="video-play" type="primary" link @click="handleTriggerSync(scope.row)">触发</el-button>
-            <el-button icon="histogram" type="primary" link @click="viewHistory(scope.row)">历史</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="gva-pagination">
-        <el-pagination
-          :current-page="page"
-          :page-size="pageSize"
-          :page-sizes="[10, 30, 50, 100]"
-          :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @current-change="handleCurrentChange"
-          @size-change="handleSizeChange"
-        />
+      <div class="gva-table-box">
+        <div class="gva-btn-list">
+          <el-button icon="plus" type="primary" @click="goCreate">新增任务</el-button>
+          <el-button icon="refresh" @click="getTableData">刷新</el-button>
+        </div>
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          style="width: 100%"
+          tooltip-effect="dark"
+          row-key="id"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column align="left" type="selection" width="55" />
+          <el-table-column align="left" label="任务名称" prop="taskName" width="180">
+            <template #default="scope">
+              <el-link type="primary" :underline="false">{{ scope.row.taskName }}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column align="left" label="源类型" prop="sourceType" width="100">
+            <template #default="scope">
+              <el-tag>{{ scope.row.sourceType }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="left" label="目标类型" prop="targetType" width="100">
+            <template #default="scope">
+              <el-tag>{{ scope.row.targetType }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="left" label="状态" prop="status" width="100">
+            <template #default="scope">
+              <el-tag :type="getStatusType(scope.row.status)">{{ getStatusLabel(scope.row.status) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="left" label="上次同步时间" prop="lastSyncTime" width="180">
+            <template #default="scope">
+              {{ scope.row.lastSyncTime ? formatDate(scope.row.lastSyncTime) : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column align="left" label="下次同步时间" prop="nextSyncTime" width="180">
+            <template #default="scope">
+              {{ scope.row.nextSyncTime ? formatDate(scope.row.nextSyncTime) : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column align="left" label="操作" min-width="180">
+            <template #default="scope">
+              <el-button icon="edit" type="primary" link @click="goEdit(scope.row)">编辑</el-button>
+              <el-button icon="delete" type="primary" link @click="deleteTask(scope.row)">删除</el-button>
+              <el-button icon="video-play" type="primary" link @click="handleTriggerSync(scope.row)">触发</el-button>
+              <el-button icon="histogram" type="primary" link @click="viewHistory(scope.row)">历史</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div class="gva-pagination">
+          <el-pagination
+            :current-page="page"
+            :page-size="pageSize"
+            :page-sizes="[10, 30, 50, 100]"
+            :total="total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
+          />
+        </div>
       </div>
+
+      <!-- 同步历史对话框 -->
+      <el-dialog v-model="historyDialogVisible" title="同步历史" width="60%" :before-close="handleHistoryDialogClose" destroy-on-close>
+        <el-table :data="historyTableData" style="width: 100%">
+          <el-table-column align="left" label="执行时间" prop="executeTime" width="180">
+            <template #default="scope">
+              {{ formatDate(scope.row.executeTime) }}
+            </template>
+          </el-table-column>
+          <el-table-column align="left" label="状态" prop="status" width="100">
+            <template #default="scope">
+              <el-tag :type="getStatusType(scope.row.status)">{{ getStatusLabel(scope.row.status) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column align="left" label="执行耗时" prop="duration" width="100">
+            <template #default="scope">
+              {{ scope.row.duration }}ms
+            </template>
+          </el-table-column>
+          <el-table-column align="left" label="同步数量" prop="syncCount" width="100" />
+          <el-table-column align="left" label="错误信息" prop="errorMsg" min-width="200">
+            <template #default="scope">
+              <span v-if="scope.row.errorMsg" class="error-text">{{ scope.row.errorMsg }}</span>
+              <span v-else>-</span>
+            </template>
+          </el-table-column>
+        </el-table>
+        <template #footer>
+          <el-button @click="handleHistoryDialogClose">关闭</el-button>
+        </template>
+      </el-dialog>
     </div>
 
-    <!-- 同步历史对话框 -->
-    <el-dialog v-model="historyDialogVisible" title="同步历史" width="60%" :before-close="handleHistoryDialogClose" destroy-on-close>
-      <el-table :data="historyTableData" style="width: 100%">
-        <el-table-column align="left" label="执行时间" prop="executeTime" width="180">
-          <template #default="scope">
-            {{ formatDate(scope.row.executeTime) }}
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="状态" prop="status" width="100">
-          <template #default="scope">
-            <el-tag :type="getStatusType(scope.row.status)">{{ getStatusLabel(scope.row.status) }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="执行耗时" prop="duration" width="100">
-          <template #default="scope">
-            {{ scope.row.duration }}ms
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="同步数量" prop="syncCount" width="100" />
-        <el-table-column align="left" label="错误信息" prop="errorMsg" min-width="200">
-          <template #default="scope">
-            <span v-if="scope.row.errorMsg" class="error-text">{{ scope.row.errorMsg }}</span>
-            <span v-else>-</span>
-          </template>
-        </el-table-column>
-      </el-table>
-      <template #footer>
-        <el-button @click="handleHistoryDialogClose">关闭</el-button>
-      </template>
-    </el-dialog>
+    <!-- 表单视图 -->
+    <div v-else class="form-view">
+      <div class="gva-table-box">
+        <div class="gva-btn-list">
+          <el-button icon="ArrowLeft" @click="closeForm">返回列表</el-button>
+        </div>
+
+        <el-form
+          ref="taskFormRef"
+          :model="taskForm"
+          :rules="taskRules"
+          label-width="100px"
+          class="task-form"
+        >
+          <el-divider content-position="left">基本信息</el-divider>
+          <el-row :gutter="16">
+            <el-col :span="24">
+              <el-form-item label="任务名称" prop="taskName">
+                <el-input v-model="taskForm.taskName" placeholder="请输入任务名称" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-divider content-position="left">数据源配置</el-divider>
+          <el-row :gutter="16">
+            <!-- 源配置 -->
+            <el-col :span="12">
+              <el-card shadow="never" class="source-card">
+                <template #header>
+                  <div class="card-header">
+                    <span>源配置</span>
+                  </div>
+                </template>
+                <el-form-item label="源类型" prop="sourceType">
+                  <el-select v-model="taskForm.sourceType" placeholder="请选择源类型" class="full-width" clearable placement="bottom-start">
+                    <el-option label="MySQL" value="MySQL" />
+                    <el-option label="PostgreSQL" value="PostgreSQL" />
+                    <el-option label="达梦" value="达梦" />
+                    <el-option label="人大金仓" value="人大金仓" />
+                    <el-option label="Oracle" value="Oracle" />
+                    <el-option label="SQLServer" value="SQLServer" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="源数据源" prop="sourceDataSourceId">
+                  <el-select
+                    v-model="taskForm.sourceDataSourceId"
+                    placeholder="请先选择源类型"
+                    class="full-width"
+                    clearable
+                    placement="bottom-start"
+                    :disabled="!taskForm.sourceType"
+                  >
+                    <el-option
+                      v-for="item in sourceDataSourceList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="String(item.id)"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="源表" prop="sourceTable">
+                  <el-select
+                    v-model="taskForm.sourceTable"
+                    placeholder="请先选择源数据源"
+                    class="full-width"
+                    clearable
+                    placement="bottom-start"
+                    :disabled="!taskForm.sourceDataSourceId"
+                  >
+                    <el-option
+                      v-for="item in sourceTableList"
+                      :key="item"
+                      :label="item"
+                      :value="item"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-card>
+            </el-col>
+            <!-- 目标配置 -->
+            <el-col :span="12">
+              <el-card shadow="never" class="target-card">
+                <template #header>
+                  <div class="card-header">
+                    <span>目标配置</span>
+                  </div>
+                </template>
+                <el-form-item label="目标类型" prop="targetType">
+                  <el-select v-model="taskForm.targetType" placeholder="请选择目标类型" class="full-width" clearable placement="bottom-start">
+                    <el-option label="MySQL" value="MySQL" />
+                    <el-option label="PostgreSQL" value="PostgreSQL" />
+                    <el-option label="达梦" value="达梦" />
+                    <el-option label="人大金仓" value="人大金仓" />
+                    <el-option label="Oracle" value="Oracle" />
+                    <el-option label="SQLServer" value="SQLServer" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="目标数据源" prop="targetDataSourceId">
+                  <el-select
+                    v-model="taskForm.targetDataSourceId"
+                    placeholder="请先选择目标类型"
+                    class="full-width"
+                    clearable
+                    placement="bottom-start"
+                    :disabled="!taskForm.targetType"
+                  >
+                    <el-option
+                      v-for="item in targetDataSourceList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="String(item.id)"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="目标表" prop="targetTable">
+                  <el-select
+                    v-model="taskForm.targetTable"
+                    placeholder="请先选择目标数据源"
+                    class="full-width"
+                    clearable
+                    placement="bottom-start"
+                    :disabled="!taskForm.targetDataSourceId"
+                  >
+                    <el-option
+                      v-for="item in targetTableList"
+                      :key="item"
+                      :label="item"
+                      :value="item"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-card>
+            </el-col>
+          </el-row>
+
+          <el-divider content-position="left">同步规则</el-divider>
+          <el-row :gutter="16">
+            <el-col :span="12">
+              <el-form-item label="字段映射规则" prop="mappingRules">
+                <el-input
+                  v-model="taskForm.mappingRules"
+                  type="textarea"
+                  placeholder="请输入字段映射规则(JSON)"
+                  :rows="3"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="CRON表达式" prop="cronExpression">
+                <el-input v-model="taskForm.cronExpression" placeholder="如: 0 0 * * *" />
+                <div class="form-tip">格式: 秒 分 时 日 月 周，每周日凌晨零点: 0 0 0 * * 1</div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-form-item>
+            <el-button type="primary" @click="saveTask">{{ isEdit ? '保存修改' : '创建任务' }}</el-button>
+            <el-button @click="closeForm">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -127,16 +293,14 @@
     triggerSync,
     getSyncHistory
   } from '@/api/offlineSync'
+  import { getDataSourceList, getDataSourceTables } from '@/api/dataSource'
   import { formatDate } from '@/utils/format'
-  import { ref } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { ref, watch } from 'vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
 
   defineOptions({
     name: 'OfflineSync'
   })
-
-  const router = useRouter()
 
   // 模拟数据
   const mockTableData = [
@@ -216,13 +380,184 @@
   const searchInfo = ref({})
   const multipleSelection = ref([])
 
-  // 路由跳转
-  const goCreate = () => {
-    router.push({ name: 'OfflineSyncForm' })
+  // 表单相关状态
+  const formVisible = ref(false)
+  const taskFormRef = ref(null)
+  const taskForm = ref({
+    id: null,
+    taskName: '',
+    sourceType: '',
+    sourceDataSourceId: null,
+    sourceTable: '',
+    targetType: '',
+    targetDataSourceId: null,
+    targetTable: '',
+    mappingRules: '',
+    cronExpression: ''
+  })
+
+  const taskRules = {
+    taskName: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
+    sourceType: [{ required: true, message: '请选择源类型', trigger: 'change' }],
+    targetType: [{ required: true, message: '请选择目标类型', trigger: 'change' }]
   }
 
+  const isEdit = ref(false)
+
+  // 数据源列表
+  const sourceDataSourceList = ref([])
+  const targetDataSourceList = ref([])
+
+  // 表列表
+  const sourceTableList = ref([])
+  const targetTableList = ref([])
+
+  // 获取数据源列表（根据类型筛选）
+  const getDataSourcesByType = async (type, target) => {
+    if (!type) {
+      if (target === 'source') {
+        sourceDataSourceList.value = []
+      } else {
+        targetDataSourceList.value = []
+      }
+      return
+    }
+    try {
+      const res = await getDataSourceList({ page: 1, pageSize: 100, keyword: '', type: type })
+      if (res.code === 0) {
+        const list = res.data.list || []
+        if (target === 'source') {
+          sourceDataSourceList.value = list.filter(item => item.status === 1)
+          // 清除已选数据源（如果类型变了）
+          if (taskForm.value.sourceType !== type) {
+            taskForm.value.sourceDataSourceId = null
+          }
+        } else {
+          targetDataSourceList.value = list.filter(item => item.status === 1)
+          if (taskForm.value.targetType !== type) {
+            taskForm.value.targetDataSourceId = null
+          }
+        }
+      }
+    } catch (e) {
+      console.error('获取数据源列表失败:', e)
+    }
+  }
+
+  // 监听源类型变化
+  watch(() => taskForm.value.sourceType, (newVal) => {
+    getDataSourcesByType(newVal, 'source')
+  })
+
+  // 监听目标类型变化
+  watch(() => taskForm.value.targetType, (newVal) => {
+    getDataSourcesByType(newVal, 'target')
+  })
+
+  // 获取表列表
+  const loadTableList = async (dataSourceId, target) => {
+    if (!dataSourceId) {
+      if (target === 'source') {
+        sourceTableList.value = []
+      } else {
+        targetTableList.value = []
+      }
+      return
+    }
+    try {
+      const res = await getDataSourceTables(dataSourceId)
+      if (res.code === 0) {
+        if (target === 'source') {
+          sourceTableList.value = res.data.tables || []
+          // 清除已选表（如果数据源变了）
+          if (taskForm.value.sourceTable) {
+            taskForm.value.sourceTable = ''
+          }
+        } else {
+          targetTableList.value = res.data.tables || []
+          if (taskForm.value.targetTable) {
+            taskForm.value.targetTable = ''
+          }
+        }
+      }
+    } catch (e) {
+      console.error('获取表列表失败:', e)
+    }
+  }
+
+  // 监听源数据源变化
+  watch(() => taskForm.value.sourceDataSourceId, (newVal) => {
+    loadTableList(newVal, 'source')
+  })
+
+  // 监听目标数据源变化
+  watch(() => taskForm.value.targetDataSourceId, (newVal) => {
+    loadTableList(newVal, 'target')
+  })
+
+  // 打开表单（新增）
+  const goCreate = () => {
+    isEdit.value = false
+    taskForm.value = {
+      id: null,
+      taskName: '',
+      sourceType: '',
+      sourceDataSourceId: null,
+      sourceTable: '',
+      targetType: '',
+      targetDataSourceId: null,
+      targetTable: '',
+      mappingRules: '',
+      cronExpression: ''
+    }
+    sourceDataSourceList.value = []
+    targetDataSourceList.value = []
+    sourceTableList.value = []
+    targetTableList.value = []
+    formVisible.value = true
+  }
+
+  // 打开表单（编辑）
   const goEdit = (row) => {
-    router.push({ name: 'OfflineSyncForm', query: { id: row.id } })
+    isEdit.value = true
+    taskForm.value = { ...row }
+    formVisible.value = true
+  }
+
+  // 关闭表单
+  const closeForm = () => {
+    formVisible.value = false
+    taskForm.value = {
+      id: null,
+      taskName: '',
+      sourceType: '',
+      sourceDataSourceId: null,
+      sourceTable: '',
+      targetType: '',
+      targetDataSourceId: null,
+      targetTable: '',
+      mappingRules: '',
+      cronExpression: ''
+    }
+    sourceDataSourceList.value = []
+    targetDataSourceList.value = []
+    sourceTableList.value = []
+    targetTableList.value = []
+  }
+
+  // 保存任务
+  const saveTask = async () => {
+    if (!taskFormRef.value) return
+    await taskFormRef.value.validate((valid) => {
+      if (valid) {
+        ElMessage({
+          type: 'success',
+          message: isEdit.value ? '修改成功' : '创建成功'
+        })
+        closeForm()
+        getTableData()
+      }
+    })
   }
 
   // 历史对话框相关
@@ -253,7 +588,6 @@
 
   // 获取表格数据
   const getTableData = async () => {
-    // 使用模拟数据
     let filteredData = [...mockTableData]
     if (searchInfo.value.taskName) {
       filteredData = filteredData.filter(item => item.taskName.includes(searchInfo.value.taskName))
@@ -341,7 +675,55 @@
 </script>
 
 <style lang="scss" scoped>
-  .error-text {
-    color: #f56c6c;
+.form-view {
+  .task-form {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
   }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .form-tip {
+    font-size: 12px;
+    color: #909399;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  :deep(.el-divider--horizontal) {
+    margin: 16px 0;
+  }
+
+  :deep(.el-card) {
+    border: 1px solid #e4e7ed;
+
+    .card-header {
+      font-weight: 600;
+      color: #303133;
+    }
+  }
+
+  :deep(.el-card + .el-card) {
+    margin-left: 16px;
+  }
+
+  .source-card,
+  .target-card {
+    :deep(.el-card__header) {
+      padding: 12px 20px;
+      background: #f5f7fa;
+    }
+
+    :deep(.el-card__body) {
+      padding: 20px;
+    }
+  }
+}
+
+.error-text {
+  color: #f56c6c;
+}
 </style>
