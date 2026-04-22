@@ -134,7 +134,7 @@ const taskRules = {
 }
 
 const goBack = () => {
-  router.push({ name: 'OfflineSync' })
+  router.push({ name: 'offlineSync' })
 }
 
 const saveTask = async () => {
@@ -145,7 +145,7 @@ const saveTask = async () => {
         type: 'success',
         message: isEdit.value ? '修改成功' : '创建成功'
       })
-      router.push({ name: 'OfflineSync' })
+      router.push({ name: 'offlineSync' })
     }
   })
 }
