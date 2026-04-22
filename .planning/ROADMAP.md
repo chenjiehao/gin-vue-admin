@@ -3,7 +3,8 @@
 ## Milestones
 
 - ✅ **v1.0 精简脚手架** — Phases 1-3 (shipped 2026-04-21)
-- 🔄 **v1.1 功能增强** — Phase 4+ (in progress)
+- ✅ **v1.1 功能增强** — Phase 4 (shipped 2026-04-22)
+- 🔄 **v1.2 待规划** — (in progress)
 
 ## Phases
 
@@ -16,10 +17,17 @@
 
 </details>
 
-<details open>
-<summary>🔄 v1.1 功能增强 (Phase 4) — IN PROGRESS</summary>
+<details>
+<summary>✅ v1.1 功能增强 (Phase 4) — SHIPPED 2026-04-22</summary>
 
-- [ ] Phase 4: 首页仪表盘 UI 重设计 (1/1 plans) — in progress
+- [x] Phase 4: 首页仪表盘 UI 重设计 (1/1 plans) — completed 2026-04-22
+
+</details>
+
+<details open>
+<summary>🔄 v1.2 待规划 — IN PROGRESS</summary>
+
+- [ ] Phase 5: (pending)
 
 </details>
 
@@ -30,10 +38,8 @@
 | 1. Backend Cleanup | v1.0 | 3/3 | Complete | 2026-04-21 |
 | 2. Frontend Cleanup | v1.0 | 2/2 | Complete | 2026-04-21 |
 | 3. Data Cleanup | v1.0 | 1/1 | Complete | 2026-04-21 |
-| 4. 首页仪表盘 UI 重设计 | v1.1 | 0/1 | Planned | — |
-
-Plans:
-- [x] 04-01-PLAN.md — 简化 Dashboard 只保留居中标题
+| 4. 首页仪表盘 UI 重设计 | v1.1 | 1/1 | Complete | 2026-04-22 |
+| 5. (pending) | v1.2 | 0/0 | Planned | — |
 
 ---
 
