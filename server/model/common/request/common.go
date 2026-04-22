@@ -40,6 +40,12 @@ type IdsReq struct {
 	Ids []int `json:"ids" form:"ids"`
 }
 
+// BatchUpdateStatusReq 批量更新状态请求
+type BatchUpdateStatusReq struct {
+	Ids    []int `json:"ids" form:"ids"`
+	Status uint  `json:"status" form:"status"`
+}
+
 // GetAuthorityId Get role by id structure
 type GetAuthorityId struct {
 	AuthorityId uint `json:"authorityId" form:"authorityId"` // 角色ID

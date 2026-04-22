@@ -131,3 +131,39 @@ func (dataSourceService *DataSourceService) TestConnection(dataSource *system.Sy
 	sqlDB.Close()
 	return true, "连接成功"
 }
+
+// BatchDelete 批量删除数据源
+// @param ids []uint
+// @return successCount int, failCount int, err error
+func (dataSourceService *DataSourceService) BatchDelete(ids []uint) (successCount int, failCount int, err error) {
+	if len(ids) == 0 {
+		return 0, 0, nil
+	}
+
+	tx := global.GVA_DB.Delete(&system.SysDataSource{}, "id IN ?", ids)
+	if tx.Error != nil {
+		return 0, len(ids), tx.Error
+	}
+
+	successCount = int(tx.RowsAffected)
+	failCount = len(ids) - successCount
+	return successCount, failCount, nil
+}
+
+// BatchUpdateStatus 批量更新数据源状态
+// @param ids []uint, status uint
+// @return successCount int, failCount int, err error
+func (dataSourceService *DataSourceService) BatchUpdateStatus(ids []uint, status uint) (successCount int, failCount int, err error) {
+	if len(ids) == 0 {
+		return 0, 0, nil
+	}
+
+	tx := global.GVA_DB.Model(&system.SysDataSource{}).Where("id IN ?", ids).Update("status", status)
+	if tx.Error != nil {
+		return 0, len(ids), tx.Error
+	}
+
+	successCount = int(tx.RowsAffected)
+	failCount = len(ids) - successCount
+	return successCount, failCount, nil
+}
