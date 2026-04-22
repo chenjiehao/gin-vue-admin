@@ -272,6 +272,7 @@ func (d *DataSourceApi) BatchUpdateStatus(c *gin.Context) {
 // @accept    application/json
 // @Produce   application/json
 // @Param     dataSourceId  query     int                        true  "数据源ID"
+// @Param     database      query     string                     false "数据库名（不传则使用数据源配置的库）"
 // @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "表列表"
 // @Router    /dataSource/getTables [get]
 func (d *DataSourceApi) GetTables(c *gin.Context) {
@@ -287,7 +288,9 @@ func (d *DataSourceApi) GetTables(c *gin.Context) {
 		return
 	}
 
-	tables, err := dataSourceService.GetTables(req.Uint())
+	database := c.Query("database")
+
+	tables, err := dataSourceService.GetTables(req.Uint(), database)
 	if err != nil {
 		global.GVA_LOG.Error("获取表列表失败!", zap.Error(err))
 		response.FailWithDetailed(map[string]interface{}{"tables": []string{}}, err.Error(), c)

@@ -376,6 +376,9 @@
             const data = res.data || {}
             if (data.success) {
               ElMessage({ type: 'success', message: data.message || '连接成功' })
+              // 连接成功后返回列表页面
+              closeForm()
+              getTableData()
             } else {
               ElMessage({ type: 'error', message: data.message || '连接失败' })
             }

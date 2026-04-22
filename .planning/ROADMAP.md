@@ -67,6 +67,7 @@
 | 10. 修复数据源和离线同步表单页无法访问的问题 | v1.3 | 1/1 | Complete | 2026-04-22 |
 | 11. 将表单页从全页跳转改为右侧 div 局部加载 | v1.3 | 1/1 | Complete | 2026-04-22 |
 | 12. 数据源管理的增强 | v1.3 | 2/3 | Complete    | 2026-04-22 |
+| 13. 数据源表列表获取 | v1.3 | 2/2 | Complete | 2026-04-22 |
 
 ### Phase 12: 数据源管理的增强
 
@@ -79,6 +80,17 @@ Plans:
 - [x] 12-01-PLAN.md — 后端连接测试 API + Service 层逻辑 (Wave 1)
 - [x] 12-02-PLAN.md — 后端批量操作 API + Service 层逻辑 (Wave 2)
 - [x] 12-03-PLAN.md — 前端连接测试 UI + 批量操作 UI (Wave 3)
+
+### Phase 13: 数据源表列表获取
+
+**Goal:** 新增后端 API 获取数据源的表列表，前端联动实现离线同步任务配置时的表选择
+**Requirements**: DS-08
+**Depends on:** Phase 12
+**Plans:** 1/2 plans executed
+
+Plans:
+- [x] 13-01-PLAN.md — 后端 GetTables API + Service 层逻辑 (Wave 1)
+- [ ] 13-02-PLAN.md — 前端表选择下拉框联动 (Wave 2)
 
 ---
 

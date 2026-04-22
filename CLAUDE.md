@@ -171,6 +171,16 @@
 - API functions return response objects with `code` property
 - Check `res.code === 0` for success
 - Use `ElMessage` for user-facing error display
+### Route Name Convention (CRITICAL)
+**组件的 `defineOptions.name`、数据库 `sys_base_menus.name`、`router.push({ name: '...' })` 三者的值必须完全一致，且统一使用 kebab-case（小写+中划线）。**
+
+示例：
+- 数据库菜单 name: `dataSourceForm`
+- 组件定义: `defineOptions({ name: 'dataSourceForm' })`
+- 路由跳转: `router.push({ name: 'dataSourceForm' })`
+- pathInfo.json 映射: `"/src/view/dataIntegration/dataSourceForm.vue": "dataSourceForm"`
+
+**常见错误：混用大小写**（如 `DataSourceForm` vs `dataSourceForm`），导致 "No match for" 路由错误。
 ## Logging
 ### Backend (Zap)
 - `Error` for failures that need attention
@@ -229,6 +239,78 @@
 ## Testing Patterns
 ### Backend Go Tests
 ### Frontend Testing
+
+## Development Guidelines
+
+### Service Restart Protocol
+**重启服务前必须先停止旧进程。**
+
+使用 `go run .` 或编译后的可执行文件启动后端服务时，每次运行都会创建一个新进程。如果不先停止旧进程，会导致：
+- 多个实例同时运行，端口冲突
+- 旧代码的进程占用端口，新代码无法生效
+- 调试时请求打到旧服务上，返回 404 或旧逻辑
+
+**正确流程：**
+1. 停止旧服务：`lsof -ti :<端口号> | xargs kill`
+2. 启动新服务：`go run .` 或 `./可执行文件`
+
+**前端同理**：重启 Vite 开发服务器前，先用 `lsof -ti :<端口号> | xargs kill` 停止旧进程。
+
+示例（后端端口 8888，前端端口 8080）：
+```bash
+# 停止后端
+lsof -ti :8888 | xargs kill 2>/dev/null
+# 停止前端
+lsof -ti :8080 | xargs kill 2>/dev/null
+# 重启后端
+cd server && go run .
+# 重启前端
+cd web && npm run dev
+```
+
+### Casbin 权限配置
+**新增 API 接口后必须同步配置 Casbin 权限。**
+
+gin-vue-admin 使用 Casbin 做 RBAC 权限控制，所有私有 API（需要登录访问的）都会经过 Casbin 中间件验证。如果接口的权限策略未配置，即使登录用户也会返回"权限不足"或"未登录"错误。
+
+**常见错误表现：**
+- 接口返回 `code: 7, msg: "未登录或非法访问，请登录"`
+- 即使已登录且 Token 有效，仍然提示权限不足
+
+**权限配置方式：**
+1. **方式一：通过数据初始化脚本**（推荐）
+   在 `server/source/system/casbin.go` 中添加新的权限策略：
+   ```go
+   {
+       Path:       "/dataSource/testConnection",
+       Method:     "POST",
+       RoleID:     "1",  // 1 通常是超级管理员角色
+   },
+   ```
+
+2. **方式二：通过代码生成器自动录入**
+   使用 GVA 代码生成器生成模块时，会自动录入 API 权限到 `sys_api` 表，并通过 `sys_menu` 关联到角色。
+
+3. **方式三：手动在数据库中添加**
+   在 `sys_menu` 和 `sys_authority_menu` 表中添加对应菜单和角色关联。
+
+**新增模块权限检查清单：**
+- [ ] API 路由已注册
+- [ ] API 信息已录入 `sys_api` 表（或通过 source 文件初始化）
+- [ ] 菜单已录入 `sys_menu` 表
+- [ ] 角色（通常是 admin）已绑定对应菜单
+- [ ] 测试接口访问是否正常
+
+**调试权限问题：**
+```bash
+# 检查服务是否正常启动
+curl http://localhost:8888/health
+
+# 检查 Token 是否有效
+curl -H "Authorization: Bearer <你的Token>" http://localhost:8888/dataSource/getDataSourceList
+
+# 如果返回 "未登录或非法访问"，则是 Casbin 权限未配置
+```
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->

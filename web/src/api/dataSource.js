@@ -134,12 +134,13 @@ export const batchUpdateStatus = (data) => {
 // @accept application/json
 // @Produce application/json
 // @Param dataSourceId query string true "数据源ID"
+// @Param database query string false "数据库名（不传则使用数据源配置的库）"
 // @Success 200 {string} string "{"code":0,"data":{"tables":[]},"msg":"获取成功"}"
 // @Router /dataSource/getTables [get]
-export const getDataSourceTables = (dataSourceId) => {
+export const getDataSourceTables = (dataSourceId, database) => {
   return service({
     url: '/dataSource/getTables',
     method: 'get',
-    params: { dataSourceId }
+    params: { dataSourceId, database }
   })
 }

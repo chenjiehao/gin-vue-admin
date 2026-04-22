@@ -182,31 +182,36 @@ func (dataSourceService *DataSourceService) BatchUpdateStatus(ids []uint, status
 //@author: claude
 //@function: GetTables
 //@description: 获取数据源下的表列表
-//@param: dataSourceId uint
+//@param: dataSourceId uint, database string
 //@return: tables []string, err error
-func (dataSourceService *DataSourceService) GetTables(dataSourceId uint) ([]string, error) {
+func (dataSourceService *DataSourceService) GetTables(dataSourceId uint, database string) ([]string, error) {
 	// 1. 根据 dataSourceId 查询数据源配置
 	var dataSource system.SysDataSource
 	if err := global.GVA_DB.First(&dataSource, dataSourceId).Error; err != nil {
 		return nil, errors.New("数据源不存在")
 	}
 
-	// 2. 根据 type 创建对应的 GORM Dialector
+	// 2. 如果未指定 database，使用数据源配置的 database
+	if database == "" {
+		database = dataSource.Database
+	}
+
+	// 3. 根据 type 创建对应的 GORM Dialector
 	var dsn string
 	var driver gorm.Dialector
 
 	switch dataSource.Type {
 	case "MySQL":
 		dsn = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			dataSource.Username, dataSource.Password, dataSource.Host, dataSource.Port, dataSource.Database)
+			dataSource.Username, dataSource.Password, dataSource.Host, dataSource.Port, database)
 		driver = mysql.Open(dsn)
 	case "PostgreSQL":
 		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
-			dataSource.Host, dataSource.Username, dataSource.Password, dataSource.Database, dataSource.Port)
+			dataSource.Host, dataSource.Username, dataSource.Password, database, dataSource.Port)
 		driver = postgres.Open(dsn)
 	case "SQLServer":
 		dsn = fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s",
-			dataSource.Username, dataSource.Password, dataSource.Host, dataSource.Port, dataSource.Database)
+			dataSource.Username, dataSource.Password, dataSource.Host, dataSource.Port, database)
 		driver = sqlserver.Open(dsn)
 	case "达梦", "人大金仓", "Oracle":
 		return nil, errors.New("暂不支持 " + dataSource.Type + " 类型的表查询")

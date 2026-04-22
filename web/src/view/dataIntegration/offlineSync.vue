@@ -179,14 +179,31 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="源表" prop="sourceTable">
+                <el-form-item label="源数据库" prop="sourceDatabase">
                   <el-select
-                    v-model="taskForm.sourceTable"
+                    v-model="taskForm.sourceDatabase"
                     placeholder="请先选择源数据源"
                     class="full-width"
                     clearable
                     placement="bottom-start"
                     :disabled="!taskForm.sourceDataSourceId"
+                  >
+                    <el-option
+                      v-for="item in sourceDatabaseList"
+                      :key="item"
+                      :label="item"
+                      :value="item"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="源表" prop="sourceTable">
+                  <el-select
+                    v-model="taskForm.sourceTable"
+                    placeholder="请先选择源数据库"
+                    class="full-width"
+                    clearable
+                    placement="bottom-start"
+                    :disabled="!taskForm.sourceDatabase"
                   >
                     <el-option
                       v-for="item in sourceTableList"
@@ -233,14 +250,31 @@
                     />
                   </el-select>
                 </el-form-item>
-                <el-form-item label="目标表" prop="targetTable">
+                <el-form-item label="目标数据库" prop="targetDatabase">
                   <el-select
-                    v-model="taskForm.targetTable"
+                    v-model="taskForm.targetDatabase"
                     placeholder="请先选择目标数据源"
                     class="full-width"
                     clearable
                     placement="bottom-start"
                     :disabled="!taskForm.targetDataSourceId"
+                  >
+                    <el-option
+                      v-for="item in targetDatabaseList"
+                      :key="item"
+                      :label="item"
+                      :value="item"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="目标表" prop="targetTable">
+                  <el-select
+                    v-model="taskForm.targetTable"
+                    placeholder="请先选择目标数据库"
+                    class="full-width"
+                    clearable
+                    placement="bottom-start"
+                    :disabled="!taskForm.targetDatabase"
                   >
                     <el-option
                       v-for="item in targetTableList"
@@ -388,9 +422,11 @@
     taskName: '',
     sourceType: '',
     sourceDataSourceId: null,
+    sourceDatabase: '',
     sourceTable: '',
     targetType: '',
     targetDataSourceId: null,
+    targetDatabase: '',
     targetTable: '',
     mappingRules: '',
     cronExpression: ''
@@ -407,6 +443,10 @@
   // 数据源列表
   const sourceDataSourceList = ref([])
   const targetDataSourceList = ref([])
+
+  // 数据库列表（从数据源的 database 字段提取）
+  const sourceDatabaseList = ref([])
+  const targetDatabaseList = ref([])
 
   // 表列表
   const sourceTableList = ref([])
@@ -432,11 +472,20 @@
           if (taskForm.value.sourceType !== type) {
             taskForm.value.sourceDataSourceId = null
           }
+          // 清除数据库和表
+          taskForm.value.sourceDatabase = ''
+          taskForm.value.sourceTable = ''
+          sourceDatabaseList.value = []
+          sourceTableList.value = []
         } else {
           targetDataSourceList.value = list.filter(item => item.status === 1)
           if (taskForm.value.targetType !== type) {
             taskForm.value.targetDataSourceId = null
           }
+          taskForm.value.targetDatabase = ''
+          taskForm.value.targetTable = ''
+          targetDatabaseList.value = []
+          targetTableList.value = []
         }
       }
     } catch (e) {
@@ -455,8 +504,10 @@
   })
 
   // 获取表列表
-  const loadTableList = async (dataSourceId, target) => {
-    if (!dataSourceId) {
+  const loadTableList = async (dataSourceId, database, target) => {
+    // 防护：没有选中有效数据源时不请求（防止 dataSourceId=undefined/null/"null"）
+    const validId = dataSourceId && dataSourceId !== 'undefined' && dataSourceId !== 'null' && dataSourceId !== ''
+    if (!validId) {
       if (target === 'source') {
         sourceTableList.value = []
       } else {
@@ -465,11 +516,11 @@
       return
     }
     try {
-      const res = await getDataSourceTables(dataSourceId)
+      const res = await getDataSourceTables(dataSourceId, database)
       if (res.code === 0) {
         if (target === 'source') {
           sourceTableList.value = res.data.tables || []
-          // 清除已选表（如果数据源变了）
+          // 清除已选表（如果数据源或库变了）
           if (taskForm.value.sourceTable) {
             taskForm.value.sourceTable = ''
           }
@@ -485,14 +536,71 @@
     }
   }
 
-  // 监听源数据源变化
+  // 填充数据库列表（从数据源的 database 字段提取，支持逗号分隔的多库）
+  const fillDatabaseList = (dataSourceId, target) => {
+    const list = target === 'source' ? sourceDataSourceList.value : targetDataSourceList.value
+    const ds = list.find(item => String(item.id) === String(dataSourceId))
+    if (ds && ds.database) {
+      const dbList = ds.database.split(',').map(d => d.trim()).filter(d => d)
+      if (target === 'source') {
+        sourceDatabaseList.value = dbList.length > 0 ? dbList : [ds.database]
+        // 自动选中第一个库
+        if (sourceDatabaseList.value.length > 0 && !taskForm.value.sourceDatabase) {
+          taskForm.value.sourceDatabase = sourceDatabaseList.value[0]
+        }
+      } else {
+        targetDatabaseList.value = dbList.length > 0 ? dbList : [ds.database]
+        if (targetDatabaseList.value.length > 0 && !taskForm.value.targetDatabase) {
+          taskForm.value.targetDatabase = targetDatabaseList.value[0]
+        }
+      }
+    } else {
+      if (target === 'source') {
+        sourceDatabaseList.value = []
+      } else {
+        targetDatabaseList.value = []
+      }
+    }
+  }
+
+  // 监听源数据源变化 - 填充数据库列表
   watch(() => taskForm.value.sourceDataSourceId, (newVal) => {
-    loadTableList(newVal, 'source')
+    if (newVal) {
+      fillDatabaseList(newVal, 'source')
+    } else {
+      sourceDatabaseList.value = []
+      taskForm.value.sourceDatabase = ''
+    }
   })
 
-  // 监听目标数据源变化
+  // 监听目标数据源变化 - 填充数据库列表
   watch(() => taskForm.value.targetDataSourceId, (newVal) => {
-    loadTableList(newVal, 'target')
+    if (newVal) {
+      fillDatabaseList(newVal, 'target')
+    } else {
+      targetDatabaseList.value = []
+      taskForm.value.targetDatabase = ''
+    }
+  })
+
+  // 监听源数据库变化 - 加载表列表
+  watch(() => taskForm.value.sourceDatabase, (newVal) => {
+    if (newVal && taskForm.value.sourceDataSourceId) {
+      loadTableList(taskForm.value.sourceDataSourceId, newVal, 'source')
+    } else {
+      sourceTableList.value = []
+      taskForm.value.sourceTable = ''
+    }
+  })
+
+  // 监听目标数据库变化 - 加载表列表
+  watch(() => taskForm.value.targetDatabase, (newVal) => {
+    if (newVal && taskForm.value.targetDataSourceId) {
+      loadTableList(taskForm.value.targetDataSourceId, newVal, 'target')
+    } else {
+      targetTableList.value = []
+      taskForm.value.targetTable = ''
+    }
   })
 
   // 打开表单（新增）
@@ -503,15 +611,19 @@
       taskName: '',
       sourceType: '',
       sourceDataSourceId: null,
+      sourceDatabase: '',
       sourceTable: '',
       targetType: '',
       targetDataSourceId: null,
+      targetDatabase: '',
       targetTable: '',
       mappingRules: '',
       cronExpression: ''
     }
     sourceDataSourceList.value = []
     targetDataSourceList.value = []
+    sourceDatabaseList.value = []
+    targetDatabaseList.value = []
     sourceTableList.value = []
     targetTableList.value = []
     formVisible.value = true
@@ -532,15 +644,19 @@
       taskName: '',
       sourceType: '',
       sourceDataSourceId: null,
+      sourceDatabase: '',
       sourceTable: '',
       targetType: '',
       targetDataSourceId: null,
+      targetDatabase: '',
       targetTable: '',
       mappingRules: '',
       cronExpression: ''
     }
     sourceDataSourceList.value = []
     targetDataSourceList.value = []
+    sourceDatabaseList.value = []
+    targetDatabaseList.value = []
     sourceTableList.value = []
     targetTableList.value = []
   }
