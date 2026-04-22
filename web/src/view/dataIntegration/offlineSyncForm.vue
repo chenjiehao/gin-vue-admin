@@ -2,7 +2,7 @@
   <div class="gva-container">
     <div class="gva-table-box">
       <div class="gva-btn-list">
-        <el-button icon="back" @click="goBack">返回列表</el-button>
+        <el-button icon="ArrowLeft" @click="goBack">返回列表</el-button>
       </div>
 
       <el-form
