@@ -1,6 +1,8 @@
 package request
 
 import (
+	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -34,6 +36,16 @@ type GetById struct {
 
 func (r *GetById) Uint() uint {
 	return uint(r.ID)
+}
+
+func (r *GetById) ParseID(idStr string) error {
+	var id int
+	_, err := fmt.Sscanf(idStr, "%d", &id)
+	if err != nil {
+		return err
+	}
+	r.ID = id
+	return nil
 }
 
 type IdsReq struct {

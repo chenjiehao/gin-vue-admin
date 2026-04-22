@@ -253,6 +253,16 @@ func (i *initApi) InitializeData(ctx context.Context) (context.Context, error) {
 		{ApiGroup: "媒体库分类", Method: "POST", Path: "/attachmentCategory/addCategory", Description: "添加/编辑分类"},
 		{ApiGroup: "媒体库分类", Method: "POST", Path: "/attachmentCategory/deleteCategory", Description: "删除分类"},
 
+		{ApiGroup: "数据源", Method: "POST", Path: "/dataSource/createDataSource", Description: "创建数据源"},
+		{ApiGroup: "数据源", Method: "POST", Path: "/dataSource/updateDataSource", Description: "更新数据源"},
+		{ApiGroup: "数据源", Method: "POST", Path: "/dataSource/deleteDataSource", Description: "删除数据源"},
+		{ApiGroup: "数据源", Method: "POST", Path: "/dataSource/getDataSourceList", Description: "获取数据源列表"},
+		{ApiGroup: "数据源", Method: "POST", Path: "/dataSource/getDataSourceById", Description: "获取数据源详情"},
+		{ApiGroup: "数据源", Method: "POST", Path: "/dataSource/testConnection", Description: "测试数据源连接"},
+		{ApiGroup: "数据源", Method: "POST", Path: "/dataSource/batchDelete", Description: "批量删除数据源"},
+		{ApiGroup: "数据源", Method: "POST", Path: "/dataSource/batchUpdateStatus", Description: "批量更新数据源状态"},
+		{ApiGroup: "数据源", Method: "GET", Path: "/dataSource/getTables", Description: "获取数据源下的表列表"},
+
 		{ApiGroup: "版本控制", Method: "GET", Path: "/sysVersion/findSysVersion", Description: "获取单一版本"},
 		{ApiGroup: "版本控制", Method: "GET", Path: "/sysVersion/getSysVersionList", Description: "获取版本列表"},
 		{ApiGroup: "版本控制", Method: "GET", Path: "/sysVersion/downloadVersionJson", Description: "下载版本json"},

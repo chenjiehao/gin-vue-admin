@@ -8,6 +8,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
+	"github.com/pkg/errors"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlserver"
@@ -85,8 +86,11 @@ func (dataSourceService *DataSourceService) GetDataSourceById(id uint) (dataSour
 }
 
 // TestConnection 测试数据源连接
-// @param dataSource *system.SysDataSource
-// @return success bool, message string
+//@author: claude
+//@function: TestConnection
+//@description: 测试数据源连接
+//@param: dataSource *system.SysDataSource
+//@return: success bool, message string
 func (dataSourceService *DataSourceService) TestConnection(dataSource *system.SysDataSource) (bool, string) {
 	var dsn string
 	var driver gorm.Dialector
@@ -133,8 +137,11 @@ func (dataSourceService *DataSourceService) TestConnection(dataSource *system.Sy
 }
 
 // BatchDelete 批量删除数据源
-// @param ids []uint
-// @return successCount int, failCount int, err error
+//@author: claude
+//@function: BatchDelete
+//@description: 批量删除数据源
+//@param: ids []uint
+//@return: successCount int, failCount int, err error
 func (dataSourceService *DataSourceService) BatchDelete(ids []uint) (successCount int, failCount int, err error) {
 	if len(ids) == 0 {
 		return 0, 0, nil
@@ -151,8 +158,11 @@ func (dataSourceService *DataSourceService) BatchDelete(ids []uint) (successCoun
 }
 
 // BatchUpdateStatus 批量更新数据源状态
-// @param ids []uint, status uint
-// @return successCount int, failCount int, err error
+//@author: claude
+//@function: BatchUpdateStatus
+//@description: 批量更新数据源状态
+//@param: ids []uint, status uint
+//@return: successCount int, failCount int, err error
 func (dataSourceService *DataSourceService) BatchUpdateStatus(ids []uint, status uint) (successCount int, failCount int, err error) {
 	if len(ids) == 0 {
 		return 0, 0, nil
@@ -166,4 +176,101 @@ func (dataSourceService *DataSourceService) BatchUpdateStatus(ids []uint, status
 	successCount = int(tx.RowsAffected)
 	failCount = len(ids) - successCount
 	return successCount, failCount, nil
+}
+
+// GetTables 获取数据源下的表列表
+//@author: claude
+//@function: GetTables
+//@description: 获取数据源下的表列表
+//@param: dataSourceId uint
+//@return: tables []string, err error
+func (dataSourceService *DataSourceService) GetTables(dataSourceId uint) ([]string, error) {
+	// 1. 根据 dataSourceId 查询数据源配置
+	var dataSource system.SysDataSource
+	if err := global.GVA_DB.First(&dataSource, dataSourceId).Error; err != nil {
+		return nil, errors.New("数据源不存在")
+	}
+
+	// 2. 根据 type 创建对应的 GORM Dialector
+	var dsn string
+	var driver gorm.Dialector
+
+	switch dataSource.Type {
+	case "MySQL":
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+			dataSource.Username, dataSource.Password, dataSource.Host, dataSource.Port, dataSource.Database)
+		driver = mysql.Open(dsn)
+	case "PostgreSQL":
+		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+			dataSource.Host, dataSource.Username, dataSource.Password, dataSource.Database, dataSource.Port)
+		driver = postgres.Open(dsn)
+	case "SQLServer":
+		dsn = fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s",
+			dataSource.Username, dataSource.Password, dataSource.Host, dataSource.Port, dataSource.Database)
+		driver = sqlserver.Open(dsn)
+	case "达梦", "人大金仓", "Oracle":
+		return nil, errors.New("暂不支持 " + dataSource.Type + " 类型的表查询")
+	default:
+		return nil, errors.New("未知的数据源类型: " + dataSource.Type)
+	}
+
+	// 3. 建立连接
+	db, err := gorm.Open(driver, &gorm.Config{})
+	if err != nil {
+		return nil, errors.New("连接失败: " + err.Error())
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, errors.New("获取数据库对象失败: " + err.Error())
+	}
+	defer sqlDB.Close()
+
+	// 4. 根据数据库类型执行查询表的 SQL
+	var tables []string
+	switch dataSource.Type {
+	case "MySQL":
+		err = sqlDB.QueryRow("SHOW TABLES").Scan(&tables)
+		// SHOW TABLES 返回的结果需要用不同方式解析
+		rows, err := sqlDB.Query("SHOW TABLES")
+		if err != nil {
+			return nil, errors.New("查询表失败: " + err.Error())
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var tableName string
+			if err := rows.Scan(&tableName); err != nil {
+				return nil, err
+			}
+			tables = append(tables, tableName)
+		}
+	case "PostgreSQL":
+		rows, err := sqlDB.Query("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+		if err != nil {
+			return nil, errors.New("查询表失败: " + err.Error())
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var tableName string
+			if err := rows.Scan(&tableName); err != nil {
+				return nil, err
+			}
+			tables = append(tables, tableName)
+		}
+	case "SQLServer":
+		rows, err := sqlDB.Query("SELECT name FROM sys.tables")
+		if err != nil {
+			return nil, errors.New("查询表失败: " + err.Error())
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var tableName string
+			if err := rows.Scan(&tableName); err != nil {
+				return nil, err
+			}
+			tables = append(tables, tableName)
+		}
+	}
+
+	return tables, nil
 }
