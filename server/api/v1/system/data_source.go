@@ -1,6 +1,8 @@
 package system
 
 import (
+	"fmt"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
@@ -173,4 +175,92 @@ func (d *DataSourceApi) TestConnection(c *gin.Context) {
 	} else {
 		response.FailWithDetailed(map[string]interface{}{"success": false, "message": message}, message, c)
 	}
+}
+
+// BatchDelete
+// @Tags      DataSource
+// @Summary   批量删除数据源
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      request.IdsReq                   true  "ID列表"
+// @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "删除结果"
+// @Router    /dataSource/batchDelete [post]
+func (d *DataSourceApi) BatchDelete(c *gin.Context) {
+	var req request.IdsReq
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if len(req.Ids) == 0 {
+		response.FailWithMessage("未选择数据源", c)
+		return
+	}
+
+	ids := make([]uint, len(req.Ids))
+	for i, id := range req.Ids {
+		ids[i] = uint(id)
+	}
+
+	successCount, failCount, err := dataSourceService.BatchDelete(ids)
+	if err != nil {
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		response.FailWithDetailed(map[string]interface{}{
+			"successCount": successCount,
+			"failCount":    failCount + 1, // include this error as 1 failure
+		}, "批量删除失败", c)
+		return
+	}
+
+	response.OkWithDetailed(map[string]interface{}{
+		"successCount": successCount,
+		"failCount":    failCount,
+	}, fmt.Sprintf("成功删除 %d 个数据源", successCount), c)
+}
+
+// BatchUpdateStatus
+// @Tags      DataSource
+// @Summary   批量更新数据源状态
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      request.BatchUpdateStatusReq      true  "ID列表和状态"
+// @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "更新结果"
+// @Router    /dataSource/batchUpdateStatus [post]
+func (d *DataSourceApi) BatchUpdateStatus(c *gin.Context) {
+	var req request.BatchUpdateStatusReq
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if len(req.Ids) == 0 {
+		response.FailWithMessage("未选择数据源", c)
+		return
+	}
+
+	ids := make([]uint, len(req.Ids))
+	for i, id := range req.Ids {
+		ids[i] = uint(id)
+	}
+
+	successCount, failCount, err := dataSourceService.BatchUpdateStatus(ids, req.Status)
+	if err != nil {
+		global.GVA_LOG.Error("批量更新状态失败!", zap.Error(err))
+		response.FailWithDetailed(map[string]interface{}{
+			"successCount": successCount,
+			"failCount":    failCount + 1,
+		}, "批量更新状态失败", c)
+		return
+	}
+
+	statusText := "启用"
+	if req.Status == 0 {
+		statusText = "禁用"
+	}
+	response.OkWithDetailed(map[string]interface{}{
+		"successCount": successCount,
+		"failCount":    failCount,
+	}, fmt.Sprintf("成功 %s %d 个数据源", statusText, successCount), c)
 }
