@@ -178,6 +178,111 @@ func (dataSourceService *DataSourceService) BatchUpdateStatus(ids []uint, status
 	return successCount, failCount, nil
 }
 
+// GetDatabases 获取数据源实例下的所有数据库
+//@author: claude
+//@function: GetDatabases
+//@description: 获取数据源实例下的所有数据库
+//@param: dataSourceId uint
+//@return: databases []string, err error
+func (dataSourceService *DataSourceService) GetDatabases(dataSourceId uint) ([]string, error) {
+	// 1. 根据 dataSourceId 查询数据源配置
+	var dataSource system.SysDataSource
+	if err := global.GVA_DB.First(&dataSource, dataSourceId).Error; err != nil {
+		return nil, errors.New("数据源不存在")
+	}
+
+	// 2. 根据 type 创建对应的 GORM Dialector（不指定 database）
+	var dsn string
+	var driver gorm.Dialector
+
+	switch dataSource.Type {
+	case "MySQL":
+		// MySQL 连接时不指定数据库，查询所有数据库
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%d)/?charset=utf8mb4&parseTime=True&loc=Local",
+			dataSource.Username, dataSource.Password, dataSource.Host, dataSource.Port)
+		driver = mysql.Open(dsn)
+	case "PostgreSQL":
+		// PostgreSQL 连接时不指定数据库，查询所有数据库
+		dsn = fmt.Sprintf("host=%s user=%s password=%s port=%d sslmode=disable",
+			dataSource.Host, dataSource.Username, dataSource.Password, dataSource.Port)
+		driver = postgres.Open(dsn)
+	case "SQLServer":
+		// SQLServer 需要指定数据库来查询，但可以连接 master 库
+		dsn = fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=master",
+			dataSource.Username, dataSource.Password, dataSource.Host, dataSource.Port)
+		driver = sqlserver.Open(dsn)
+	case "达梦", "人大金仓", "Oracle":
+		return nil, errors.New("暂不支持 " + dataSource.Type + " 类型的数据库查询")
+	default:
+		return nil, errors.New("未知的数据源类型: " + dataSource.Type)
+	}
+
+	// 3. 建立连接
+	db, err := gorm.Open(driver, &gorm.Config{})
+	if err != nil {
+		return nil, errors.New("连接失败: " + err.Error())
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		return nil, errors.New("获取数据库对象失败: " + err.Error())
+	}
+	defer sqlDB.Close()
+
+	// 4. 根据数据库类型执行查询数据库列表的 SQL
+	var databases []string
+	switch dataSource.Type {
+	case "MySQL":
+		// 使用 information_schema 查询数据库列表，这种方式权限要求更低
+		rows, err := sqlDB.Query("SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME NOT IN ('information_schema', 'performance_schema', 'mysql', 'sys', 'ndb', 'tmp')")
+		if err != nil {
+			return nil, errors.New("查询数据库列表失败: " + err.Error())
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var dbName string
+			if err := rows.Scan(&dbName); err != nil {
+				return nil, err
+			}
+			databases = append(databases, dbName)
+		}
+	case "PostgreSQL":
+		rows, err := sqlDB.Query("SELECT datname FROM pg_database WHERE datistemplate = false")
+		if err != nil {
+			return nil, errors.New("查询数据库列表失败: " + err.Error())
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var dbName string
+			if err := rows.Scan(&dbName); err != nil {
+				return nil, err
+			}
+			// 过滤掉系统数据库
+			if dbName != "postgres" && dbName != "template0" && dbName != "template1" {
+				databases = append(databases, dbName)
+			}
+		}
+	case "SQLServer":
+		rows, err := sqlDB.Query("SELECT name FROM sys.databases WHERE state = 0")
+		if err != nil {
+			return nil, errors.New("查询数据库列表失败: " + err.Error())
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var dbName string
+			if err := rows.Scan(&dbName); err != nil {
+				return nil, err
+			}
+			// 过滤掉系统数据库
+			if dbName != "master" && dbName != "tempdb" && dbName != "model" && dbName != "msdb" {
+				databases = append(databases, dbName)
+			}
+		}
+	}
+
+	return databases, nil
+}
+
 // GetTables 获取数据源下的表列表
 //@author: claude
 //@function: GetTables

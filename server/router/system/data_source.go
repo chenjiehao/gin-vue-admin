@@ -19,6 +19,7 @@ func (d *DataSourceRouter) InitDataSourceRouter(Router *gin.RouterGroup) (R gin.
 		dataSourceRouter.POST("batchDelete", dataSourceApi.BatchDelete)
 		dataSourceRouter.POST("batchUpdateStatus", dataSourceApi.BatchUpdateStatus)
 		dataSourceRouter.GET("getTables", dataSourceApi.GetTables)
+		dataSourceRouter.GET("getDatabases", dataSourceApi.GetDatabases)
 	}
 	return dataSourceRouter
 }

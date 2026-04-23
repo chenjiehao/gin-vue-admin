@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 13-01-plan
-last_updated: "2026-04-22T10:06:07.806Z"
-last_activity: 2026-04-22
+last_updated: "2026-04-23T05:42:18.578Z"
+last_activity: 2026-04-23
 progress:
-  total_phases: 2
+  total_phases: 5
   completed_phases: 1
-  total_plans: 5
+  total_plans: 6
   completed_plans: 4
   percent: 100
 ---
@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-04-22)
 
 ## Current Position
 
-Phase: 13 (data-source-table-list) — EXECUTING
-Plan: 2 of 2
+Phase: 15
+Plan: Not started
 Status: Ready to execute
-Last activity: 2026-04-22
+Last activity: 2026-04-23
 
 Progress: [████████████████████] 100%
 
@@ -66,6 +66,8 @@ Progress: [████████████████████] 100%
 
 ### Roadmap Evolution
 
+- Phase 15 added: 修复离线同步下拉框ID字段大小写问题并规范数据绑定
+- Phase 14 added: 修复离线同步的四级下拉框联动bug
 - Phase 4 added: 首页仪表盘 UI 重设计
 - Phase 5 added: 恢复审计日志菜单 + 新增数据集成模版一级菜单
 - v1.0, v1.1, v1.2 completed

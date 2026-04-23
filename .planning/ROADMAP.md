@@ -92,6 +92,26 @@ Plans:
 - [x] 13-01-PLAN.md — 后端 GetTables API + Service 层逻辑 (Wave 1)
 - [ ] 13-02-PLAN.md — 前端表选择下拉框联动 (Wave 2)
 
+### Phase 14: 修复离线同步的四级下拉框联动bug
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 13
+**Plans:** 0/1 plans complete
+
+Plans:
+- [x] TBD (run /gsd:plan-phase 14 to break down) (completed 2026-04-23)
+
+### Phase 15: 修复离线同步下拉框ID字段大小写问题并规范数据绑定
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 14
+**Plans:** 0/0 plans complete
+
+Plans:
+- [x] TBD (run /gsd:plan-phase 15 to break down) (completed 2026-04-23)
+
 ---
 
 _For milestone details, see [.planning/milestones/v1.0-ROADMAP.md](.planning/milestones/v1.0-ROADMAP.md)_

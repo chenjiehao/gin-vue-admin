@@ -144,3 +144,19 @@ export const getDataSourceTables = (dataSourceId, database) => {
     params: { dataSourceId, database }
   })
 }
+
+// @Tags DataSource
+// @Summary 获取数据源实例下的数据库列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param dataSourceId query string true "数据源ID"
+// @Success 200 {string} string "{"code":0,"data":{"databases":[]},"msg":"获取成功"}"
+// @Router /dataSource/getDatabases [get]
+export const getDataSourceDatabases = (dataSourceId) => {
+  return service({
+    url: '/dataSource/getDatabases',
+    method: 'get',
+    params: { dataSourceId }
+  })
+}

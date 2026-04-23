@@ -265,6 +265,38 @@ func (d *DataSourceApi) BatchUpdateStatus(c *gin.Context) {
 	}, fmt.Sprintf("成功 %s %d 个数据源", statusText, successCount), c)
 }
 
+// GetDatabases
+// @Tags      DataSource
+// @Summary   获取数据源实例下的数据库列表
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     dataSourceId  query     int                        true  "数据源ID"
+// @Success   200   {object}  response.Response{data=map[string]interface{},msg=string}  "数据库列表"
+// @Router    /dataSource/getDatabases [get]
+func (d *DataSourceApi) GetDatabases(c *gin.Context) {
+	dataSourceIdStr := c.Query("dataSourceId")
+	if dataSourceIdStr == "" {
+		response.FailWithMessage("dataSourceId 参数不能为空", c)
+		return
+	}
+
+	var req request.GetById
+	if err := req.ParseID(dataSourceIdStr); err != nil {
+		response.FailWithMessage("无效的 dataSourceId", c)
+		return
+	}
+
+	databases, err := dataSourceService.GetDatabases(req.Uint())
+	if err != nil {
+		global.GVA_LOG.Error("获取数据库列表失败!", zap.Error(err))
+		response.FailWithDetailed(map[string]interface{}{"databases": []string{}}, err.Error(), c)
+		return
+	}
+
+	response.OkWithDetailed(map[string]interface{}{"databases": databases}, "获取成功", c)
+}
+
 // GetTables
 // @Tags      DataSource
 // @Summary   获取数据源下的表列表

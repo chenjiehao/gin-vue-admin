@@ -61,6 +61,7 @@ func (i *initCasbin) InitializeData(ctx context.Context) (context.Context, error
 		{Ptype: "p", V0: "888", V1: "/dataSource/batchDelete", V2: "POST"},
 		{Ptype: "p", V0: "888", V1: "/dataSource/batchUpdateStatus", V2: "POST"},
 		{Ptype: "p", V0: "888", V1: "/dataSource/getTables", V2: "GET"},
+		{Ptype: "p", V0: "888", V1: "/dataSource/getDatabases", V2: "GET"},
 
 		{Ptype: "p", V0: "888", V1: "/sysApiToken/createApiToken", V2: "POST"},
 		{Ptype: "p", V0: "888", V1: "/sysApiToken/getApiTokenList", V2: "POST"},
@@ -290,6 +291,7 @@ func (i *initCasbin) InitializeData(ctx context.Context) (context.Context, error
 		{Ptype: "p", V0: "8881", V1: "/dataSource/batchDelete", V2: "POST"},
 		{Ptype: "p", V0: "8881", V1: "/dataSource/batchUpdateStatus", V2: "POST"},
 		{Ptype: "p", V0: "8881", V1: "/dataSource/getTables", V2: "GET"},
+		{Ptype: "p", V0: "8881", V1: "/dataSource/getDatabases", V2: "GET"},
 		{Ptype: "p", V0: "8881", V1: "/authority/createAuthority", V2: "POST"},
 		{Ptype: "p", V0: "8881", V1: "/authority/deleteAuthority", V2: "POST"},
 		{Ptype: "p", V0: "8881", V1: "/authority/getAuthorityList", V2: "POST"},
@@ -345,6 +347,7 @@ func (i *initCasbin) InitializeData(ctx context.Context) (context.Context, error
 		{Ptype: "p", V0: "9528", V1: "/dataSource/batchDelete", V2: "POST"},
 		{Ptype: "p", V0: "9528", V1: "/dataSource/batchUpdateStatus", V2: "POST"},
 		{Ptype: "p", V0: "9528", V1: "/dataSource/getTables", V2: "GET"},
+		{Ptype: "p", V0: "9528", V1: "/dataSource/getDatabases", V2: "GET"},
 
 		{Ptype: "p", V0: "9528", V1: "/authority/createAuthority", V2: "POST"},
 		{Ptype: "p", V0: "9528", V1: "/authority/deleteAuthority", V2: "POST"},

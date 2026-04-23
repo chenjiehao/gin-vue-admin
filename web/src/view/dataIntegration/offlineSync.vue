@@ -170,12 +170,13 @@
                     clearable
                     placement="bottom-start"
                     :disabled="!taskForm.sourceType"
+                    @change="handleSourceDataSourceChange"
                   >
                     <el-option
                       v-for="item in sourceDataSourceList"
-                      :key="item.id"
+                      :key="item.ID"
                       :label="item.name"
-                      :value="String(item.id)"
+                      :value="item.name"
                     />
                   </el-select>
                 </el-form-item>
@@ -241,12 +242,13 @@
                     clearable
                     placement="bottom-start"
                     :disabled="!taskForm.targetType"
+                    @change="handleTargetDataSourceChange"
                   >
                     <el-option
                       v-for="item in targetDataSourceList"
-                      :key="item.id"
+                      :key="item.ID"
                       :label="item.name"
-                      :value="String(item.id)"
+                      :value="item.name"
                     />
                   </el-select>
                 </el-form-item>
@@ -327,7 +329,7 @@
     triggerSync,
     getSyncHistory
   } from '@/api/offlineSync'
-  import { getDataSourceList, getDataSourceTables } from '@/api/dataSource'
+  import { getDataSourceList, getDataSourceTables, getDataSourceDatabases } from '@/api/dataSource'
   import { formatDate } from '@/utils/format'
   import { ref, watch } from 'vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
@@ -536,57 +538,98 @@
     }
   }
 
-  // 填充数据库列表（从数据源的 database 字段提取，支持逗号分隔的多库）
-  const fillDatabaseList = (dataSourceId, target) => {
-    const list = target === 'source' ? sourceDataSourceList.value : targetDataSourceList.value
-    const ds = list.find(item => String(item.id) === String(dataSourceId))
-    if (ds && ds.database) {
-      const dbList = ds.database.split(',').map(d => d.trim()).filter(d => d)
-      if (target === 'source') {
-        sourceDatabaseList.value = dbList.length > 0 ? dbList : [ds.database]
-        // 自动选中第一个库
-        if (sourceDatabaseList.value.length > 0 && !taskForm.value.sourceDatabase) {
-          taskForm.value.sourceDatabase = sourceDatabaseList.value[0]
-        }
-      } else {
-        targetDatabaseList.value = dbList.length > 0 ? dbList : [ds.database]
-        if (targetDatabaseList.value.length > 0 && !taskForm.value.targetDatabase) {
-          taskForm.value.targetDatabase = targetDatabaseList.value[0]
-        }
-      }
-    } else {
+  // 填充数据库列表（调用 API 获取数据源实例下的所有数据库）
+  const fillDatabaseList = async (dataSourceId, target) => {
+    if (!dataSourceId) {
       if (target === 'source') {
         sourceDatabaseList.value = []
       } else {
         targetDatabaseList.value = []
       }
+      return
+    }
+    try {
+      const res = await getDataSourceDatabases(dataSourceId)
+      if (res.code === 0) {
+        const databases = res.data.databases || []
+        if (target === 'source') {
+          sourceDatabaseList.value = databases
+          // 自动选中第一个库（仅在没有选中库的情况下）
+          if (databases.length > 0 && !taskForm.value.sourceDatabase) {
+            taskForm.value.sourceDatabase = databases[0]
+          }
+        } else {
+          targetDatabaseList.value = databases
+          if (databases.length > 0 && !taskForm.value.targetDatabase) {
+            taskForm.value.targetDatabase = databases[0]
+          }
+        }
+      }
+    } catch (e) {
+      console.error('获取数据库列表失败:', e)
     }
   }
 
-  // 监听源数据源变化 - 填充数据库列表
+  // 监听源数据源变化 - 只在清空时处理
+  // handleSourceDataSourceChange 已处理 fillDatabaseList 调用
   watch(() => taskForm.value.sourceDataSourceId, (newVal) => {
-    if (newVal) {
-      fillDatabaseList(newVal, 'source')
+    if (!newVal) {
+      sourceDatabaseList.value = []
+      taskForm.value.sourceDatabase = ''
+      sourceTableList.value = []
+      taskForm.value.sourceTable = ''
+    }
+  }, { immediate: false })
+
+  // 直接处理源数据源变化
+  const handleSourceDataSourceChange = (name) => {
+    if (name && typeof name === 'string') {
+      const selectedItem = sourceDataSourceList.value.find(item => item.name === name)
+      if (selectedItem) {
+        taskForm.value.sourceDataSourceId = selectedItem.name
+        fillDatabaseList(selectedItem.ID, 'source')
+      }
     } else {
+      taskForm.value.sourceDataSourceId = null
       sourceDatabaseList.value = []
       taskForm.value.sourceDatabase = ''
     }
+  }
+
+  // 监听目标数据源变化 - 只处理清空逻辑
+  // 注意：handleTargetDataSourceChange 已处理 fillDatabaseList 调用
+  watch(() => taskForm.value.targetDataSourceId, (newVal, oldVal) => {
+    if (!newVal) {
+      targetDatabaseList.value = []
+      taskForm.value.targetDatabase = ''
+      targetTableList.value = []
+      taskForm.value.targetTable = ''
+    }
   })
 
-  // 监听目标数据源变化 - 填充数据库列表
-  watch(() => taskForm.value.targetDataSourceId, (newVal) => {
-    if (newVal) {
-      fillDatabaseList(newVal, 'target')
+  // 直接处理目标数据源变化
+  const handleTargetDataSourceChange = (name) => {
+    if (name && typeof name === 'string') {
+      const selectedItem = targetDataSourceList.value.find(item => item.name === name)
+      if (selectedItem) {
+        taskForm.value.targetDataSourceId = selectedItem.name
+        fillDatabaseList(selectedItem.ID, 'target')
+      }
     } else {
+      taskForm.value.targetDataSourceId = null
       targetDatabaseList.value = []
       taskForm.value.targetDatabase = ''
     }
-  })
+  }
 
   // 监听源数据库变化 - 加载表列表
   watch(() => taskForm.value.sourceDatabase, (newVal) => {
     if (newVal && taskForm.value.sourceDataSourceId) {
-      loadTableList(taskForm.value.sourceDataSourceId, newVal, 'source')
+      // sourceDataSourceId 存的是 name，需要查找对应的 ID
+      const item = sourceDataSourceList.value.find(i => i.name === taskForm.value.sourceDataSourceId)
+      if (item) {
+        loadTableList(item.ID, newVal, 'source')
+      }
     } else {
       sourceTableList.value = []
       taskForm.value.sourceTable = ''
@@ -596,7 +639,10 @@
   // 监听目标数据库变化 - 加载表列表
   watch(() => taskForm.value.targetDatabase, (newVal) => {
     if (newVal && taskForm.value.targetDataSourceId) {
-      loadTableList(taskForm.value.targetDataSourceId, newVal, 'target')
+      const item = targetDataSourceList.value.find(i => i.name === taskForm.value.targetDataSourceId)
+      if (item) {
+        loadTableList(item.ID, newVal, 'target')
+      }
     } else {
       targetTableList.value = []
       taskForm.value.targetTable = ''
