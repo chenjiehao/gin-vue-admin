@@ -29,6 +29,7 @@ type ApiGroup struct {
 	SkillsApi
 	AIWorkflowSessionApi
 	DataSourceApi
+	OfflineSyncApi
 }
 
 var (
@@ -58,4 +59,6 @@ var (
 	apiTokenService          = service.ServiceGroupApp.SystemServiceGroup.ApiTokenService
 	skillsService            = service.ServiceGroupApp.SystemServiceGroup.SkillsService
 	dataSourceService        = service.ServiceGroupApp.SystemServiceGroup.DataSourceService
+	offlineSyncService       = service.ServiceGroupApp.OfflineSyncService
+	seatunnelScriptService   = service.ServiceGroupApp.SeatunnelScriptService
 )

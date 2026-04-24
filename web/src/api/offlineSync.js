@@ -7,12 +7,12 @@ import service from '@/utils/request'
 // @Produce application/json
 // @Param data body request.PageInfo true "分页获取同步任务列表"
 // @Success 200 {string} string "{"code":0,"data":{},"msg":"获取成功"}"
-// @Router /offlineSync/getOfflineSyncList [get]
-export const getOfflineSyncList = (params) => {
+// @Router /offlineSync/getOfflineSyncList [post]
+export const getOfflineSyncList = (data) => {
   return service({
     url: '/offlineSync/getOfflineSyncList',
-    method: 'get',
-    params
+    method: 'post',
+    data
   })
 }
 
@@ -53,14 +53,13 @@ export const updateOfflineSync = (data) => {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body request.DeleteOfflineSyncRequest true "删除同步任务"
+// @Param id path int true "任务ID"
 // @Success 200 {string} string "{"code":0,"data":{},"msg":"删除成功"}"
 // @Router /offlineSync/deleteOfflineSync [delete]
-export const deleteOfflineSync = (data) => {
+export const deleteOfflineSync = (id) => {
   return service({
-    url: '/offlineSync/deleteOfflineSync',
-    method: 'delete',
-    data
+    url: `/offlineSync/deleteOfflineSync?id=${id}`,
+    method: 'delete'
   })
 }
 
@@ -93,5 +92,21 @@ export const getSyncHistory = (params) => {
     url: '/offlineSync/getSyncHistory',
     method: 'get',
     params
+  })
+}
+
+// @Tags OfflineSync
+// @Summary 生成 SeaTunnel 任务脚本
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.GenerateSeatunnelScriptRequest true "生成脚本请求"
+// @Success 200 {string} string "{"code":0,"data":{},"msg":"生成成功"}"
+// @Router /offlineSync/generateScript [post]
+export const generateScript = (data) => {
+  return service({
+    url: '/offlineSync/generateScript',
+    method: 'post',
+    data
   })
 }

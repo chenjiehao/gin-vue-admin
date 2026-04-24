@@ -7,5 +7,7 @@ import (
 var ServiceGroupApp = new(ServiceGroup)
 
 type ServiceGroup struct {
-	SystemServiceGroup system.ServiceGroup
+	SystemServiceGroup       system.ServiceGroup
+	SeatunnelScriptService   system.SeatunnelScriptService
+	OfflineSyncService       system.OfflineSyncService
 }

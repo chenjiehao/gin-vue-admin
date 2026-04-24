@@ -25,9 +25,9 @@ See: .planning/PROJECT.md (updated 2026-04-22)
 
 ## Current Position
 
-Phase: 15
-Plan: Not started
-Status: Ready to execute
+Phase: 16
+Plan: Completed
+Status: Shipped
 Last activity: 2026-04-23
 
 Progress: [████████████████████] 100%
@@ -66,6 +66,7 @@ Progress: [████████████████████] 100%
 
 ### Roadmap Evolution
 
+- Phase 16 added: 实现Apache SeaTunnel任务脚本生成
 - Phase 15 added: 修复离线同步下拉框ID字段大小写问题并规范数据绑定
 - Phase 14 added: 修复离线同步的四级下拉框联动bug
 - Phase 4 added: 首页仪表盘 UI 重设计

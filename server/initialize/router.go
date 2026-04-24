@@ -99,6 +99,7 @@ func Routers() *gin.Engine {
 		systemRouter.InitApiTokenRouter(PrivateGroup)                         // apiToken签发
 		systemRouter.InitSkillsRouter(PrivateGroup, PublicGroup)              // Skills 定义器
 			systemRouter.InitDataSourceRouter(PrivateGroup)                    // 数据源管理
+			systemRouter.InitOfflineSyncRouter(PrivateGroup)                   // 离线同步
 	}
 
 	//插件路由安装

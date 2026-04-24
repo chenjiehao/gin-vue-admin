@@ -29,6 +29,14 @@ func (r *PageInfo) Paginate() func(db *gorm.DB) *gorm.DB {
 	}
 }
 
+// DataSourcePageInfo 数据源分页查询（支持类型过滤）
+type DataSourcePageInfo struct {
+	Page     int    `json:"page" form:"page"`
+	PageSize int    `json:"pageSize" form:"pageSize"`
+	Keyword  string `json:"keyword" form:"keyword"`
+	Type     string `json:"type" form:"type"`
+}
+
 // GetById Find by id structure
 type GetById struct {
 	ID int `json:"id" form:"id"` // 主键ID

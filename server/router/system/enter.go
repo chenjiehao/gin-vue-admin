@@ -25,6 +25,7 @@ type RouterGroup struct {
 	ApiTokenRouter
 	SkillsRouter
 	DataSourceRouter
+	OfflineSyncRouter
 }
 
 var (
@@ -52,4 +53,5 @@ var (
 	skillsApi            = api.ApiGroupApp.SystemApiGroup.SkillsApi
 	aiWorkflowSessionApi = api.ApiGroupApp.SystemApiGroup.AIWorkflowSessionApi
 	dataSourceApi        = api.ApiGroupApp.SystemApiGroup.DataSourceApi
+	offlineSyncApi       = api.ApiGroupApp.SystemApiGroup.OfflineSyncApi
 )

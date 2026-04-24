@@ -52,16 +52,19 @@ func (dataSourceService *DataSourceService) DeleteDataSource(id uint) error {
 //@author: claude
 //@function: GetDataSourceList
 //@description: 获取数据源列表
-//@param: info request.PageInfo
+//@param: info request.DataSourcePageInfo
 //@return: list []system.SysDataSource, total int64, err error
 
-func (dataSourceService *DataSourceService) GetDataSourceList(info request.PageInfo) (list []system.SysDataSource, total int64, err error) {
+func (dataSourceService *DataSourceService) GetDataSourceList(info request.DataSourcePageInfo) (list []system.SysDataSource, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GVA_DB.Model(&system.SysDataSource{})
 
 	if info.Keyword != "" {
 		db = db.Where("name LIKE ?", "%"+info.Keyword+"%")
+	}
+	if info.Type != "" {
+		db = db.Where("type = ?", info.Type)
 	}
 
 	err = db.Count(&total).Error

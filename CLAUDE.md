@@ -181,6 +181,32 @@
 - pathInfo.json 映射: `"/src/view/dataIntegration/dataSourceForm.vue": "dataSourceForm"`
 
 **常见错误：混用大小写**（如 `DataSourceForm` vs `dataSourceForm`），导致 "No match for" 路由错误。
+
+### 前后端字段大小写规范 (CRITICAL)
+**GVA 框架的 ID 字段使用大写 `ID`，前端必须使用大写访问。**
+
+GVA 框架的 `GVA_MODEL` 结构体定义如下：
+```go
+type GVA_MODEL struct {
+    ID        uint           `gorm:"primarykey" json:"ID"` // 主键ID
+    CreatedAt time.Time      // 创建时间
+    UpdatedAt time.Time      // 更新时间
+    DeletedAt gorm.DeletedAt `gorm:"index" json:"-"` // 删除时间
+}
+```
+
+**前端必须使用大写 `ID` 访问主键，不能使用小写 `id`。**
+
+常见错误场景：
+| 错误写法 | 正确写法 | 说明 |
+|---------|---------|------|
+| `row.id` | `row.ID` | 删除/编辑时获取记录ID |
+| `scope.row.id` | `scope.row.ID` | 表格操作列获取记录ID |
+| `row-key="id"` | `row-key="ID"` | el-table 的 row-key 属性 |
+| `form.id` | `form.ID` | 表单数据中的ID字段 |
+
+**排查技巧**：如果遇到 "缺少任务ID"、"cannot unmarshal string into Go struct" 等错误，首先检查前端是否使用了正确大小的 ID 字段。
+
 ## Logging
 ### Backend (Zap)
 - `Error` for failures that need attention

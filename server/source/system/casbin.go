@@ -63,6 +63,15 @@ func (i *initCasbin) InitializeData(ctx context.Context) (context.Context, error
 		{Ptype: "p", V0: "888", V1: "/dataSource/getTables", V2: "GET"},
 		{Ptype: "p", V0: "888", V1: "/dataSource/getDatabases", V2: "GET"},
 
+		{Ptype: "p", V0: "888", V1: "/offlineSync/generateScript", V2: "POST"},
+		{Ptype: "p", V0: "888", V1: "/offlineSync/createOfflineSync", V2: "POST"},
+		{Ptype: "p", V0: "888", V1: "/offlineSync/updateOfflineSync", V2: "PUT"},
+		{Ptype: "p", V0: "888", V1: "/offlineSync/deleteOfflineSync", V2: "DELETE"},
+		{Ptype: "p", V0: "888", V1: "/offlineSync/getOfflineSyncById", V2: "GET"},
+		{Ptype: "p", V0: "888", V1: "/offlineSync/getOfflineSyncList", V2: "POST"},
+		{Ptype: "p", V0: "888", V1: "/offlineSync/regenerateScript", V2: "POST"},
+		{Ptype: "p", V0: "888", V1: "/offlineSync/getScript", V2: "GET"},
+
 		{Ptype: "p", V0: "888", V1: "/sysApiToken/createApiToken", V2: "POST"},
 		{Ptype: "p", V0: "888", V1: "/sysApiToken/getApiTokenList", V2: "POST"},
 		{Ptype: "p", V0: "888", V1: "/sysApiToken/deleteApiToken", V2: "POST"},

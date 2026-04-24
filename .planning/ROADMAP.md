@@ -112,6 +112,15 @@ Plans:
 Plans:
 - [x] TBD (run /gsd:plan-phase 15 to break down) (completed 2026-04-23)
 
+### Phase 16: 实现Apache SeaTunnel任务脚本生成
+
+**Goal:** 后端根据离线同步配置生成 Apache SeaTunnel 任务 JSON 脚本
+**Depends on:** Phase 15
+**Plans:** 1 plan — COMPLETE
+
+Plans:
+- [x] 16-01-PLAN.md — 分析前端表单与 SeaTunnel JSON 结构对比，确定需新增字段 — SHIPPED 2026-04-23
+
 ---
 
 _For milestone details, see [.planning/milestones/v1.0-ROADMAP.md](.planning/milestones/v1.0-ROADMAP.md)_

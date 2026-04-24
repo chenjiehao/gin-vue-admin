@@ -104,11 +104,11 @@ func (d *DataSourceApi) DeleteDataSource(c *gin.Context) {
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      request.PageInfo                 true  "分页参数"
+// @Param     data  body      request.DataSourcePageInfo       true  "分页参数"
 // @Success   200   {object}  response.Response{data=response.PageResult,msg=string}  "获取成功"
 // @Router    /dataSource/getDataSourceList [post]
 func (d *DataSourceApi) GetDataSourceList(c *gin.Context) {
-	var pageInfo request.PageInfo
+	var pageInfo request.DataSourcePageInfo
 	err := c.ShouldBindJSON(&pageInfo)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)

@@ -31,7 +31,7 @@
           :data="tableData"
           style="width: 100%"
           tooltip-effect="dark"
-          row-key="id"
+          row-key="ID"
           @selection-change="handleSelectionChange"
         >
           <el-table-column align="left" type="selection" width="55" />
@@ -50,19 +50,19 @@
               <el-tag>{{ scope.row.targetType }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column align="left" label="状态" prop="status" width="100">
+          <el-table-column align="left" label="状态" prop="lastSyncStatus" width="100">
             <template #default="scope">
-              <el-tag :type="getStatusType(scope.row.status)">{{ getStatusLabel(scope.row.status) }}</el-tag>
+              <el-tag :type="getStatusType(scope.row.lastSyncStatus)">{{ getStatusLabel(scope.row.lastSyncStatus) }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column align="left" label="上次同步时间" prop="lastSyncTime" width="180">
             <template #default="scope">
-              {{ scope.row.lastSyncTime ? formatDate(scope.row.lastSyncTime) : '-' }}
+              {{ scope.row.lastSyncTime ? formatDate(String(scope.row.lastSyncTime)) : '-' }}
             </template>
           </el-table-column>
           <el-table-column align="left" label="下次同步时间" prop="nextSyncTime" width="180">
             <template #default="scope">
-              {{ scope.row.nextSyncTime ? formatDate(scope.row.nextSyncTime) : '-' }}
+              {{ scope.row.nextSyncTime ? formatDate(String(scope.row.nextSyncTime)) : '-' }}
             </template>
           </el-table-column>
           <el-table-column align="left" label="操作" min-width="180">
@@ -312,6 +312,7 @@
 
           <el-form-item>
             <el-button type="primary" @click="saveTask">{{ isEdit ? '保存修改' : '创建任务' }}</el-button>
+            <el-button type="success" @click="handleGenerateScript">生成脚本</el-button>
             <el-button @click="closeForm">取消</el-button>
           </el-form-item>
         </el-form>
@@ -327,11 +328,12 @@
     updateOfflineSync,
     deleteOfflineSync,
     triggerSync,
-    getSyncHistory
+    getSyncHistory,
+    generateScript
   } from '@/api/offlineSync'
   import { getDataSourceList, getDataSourceTables, getDataSourceDatabases } from '@/api/dataSource'
   import { formatDate } from '@/utils/format'
-  import { ref, watch } from 'vue'
+  import { ref, watch, nextTick } from 'vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
 
   defineOptions({
@@ -676,9 +678,60 @@
   }
 
   // 打开表单（编辑）
-  const goEdit = (row) => {
+  const goEdit = async (row) => {
     isEdit.value = true
     taskForm.value = { ...row }
+
+    // 确保数据源列表已加载（编辑时需要将 ID 转换为 name）
+    if (sourceDataSourceList.value.length === 0 && row.sourceType) {
+      await getDataSourcesByType(row.sourceType, 'source')
+    }
+    if (targetDataSourceList.value.length === 0 && row.targetType) {
+      await getDataSourcesByType(row.targetType, 'target')
+    }
+
+    // 将 ID 转换为 name（ dropdown 使用 name 作为 value）
+    await nextTick()
+    if (row.sourceDataSourceId) {
+      const sourceItem = sourceDataSourceList.value.find(item => item.ID === row.sourceDataSourceId)
+      if (sourceItem) {
+        taskForm.value.sourceDataSourceId = sourceItem.name
+      }
+    }
+    if (row.targetDataSourceId) {
+      const targetItem = targetDataSourceList.value.find(item => item.ID === row.targetDataSourceId)
+      if (targetItem) {
+        taskForm.value.targetDataSourceId = targetItem.name
+      }
+    }
+
+    // 加载数据库列表（编辑时需要回显已选的数据库和表）
+    if (row.sourceDataSourceId) {
+      await fillDatabaseList(row.sourceDataSourceId, 'source')
+      // 确保数据库被正确设置
+      if (row.sourceDatabase) {
+        taskForm.value.sourceDatabase = row.sourceDatabase
+        await loadTableList(row.sourceDataSourceId, row.sourceDatabase, 'source')
+      }
+    }
+    if (row.targetDataSourceId) {
+      await fillDatabaseList(row.targetDataSourceId, 'target')
+      // 确保数据库被正确设置
+      if (row.targetDatabase) {
+        taskForm.value.targetDatabase = row.targetDatabase
+        await loadTableList(row.targetDataSourceId, row.targetDatabase, 'target')
+      }
+    }
+
+    // 等待所有 watch 执行完成后，再设置表的值
+    await nextTick()
+    if (row.sourceTable) {
+      taskForm.value.sourceTable = row.sourceTable
+    }
+    if (row.targetTable) {
+      taskForm.value.targetTable = row.targetTable
+    }
+
     formVisible.value = true
   }
 
@@ -710,16 +763,86 @@
   // 保存任务
   const saveTask = async () => {
     if (!taskFormRef.value) return
-    await taskFormRef.value.validate((valid) => {
+    await taskFormRef.value.validate(async (valid) => {
       if (valid) {
-        ElMessage({
-          type: 'success',
-          message: isEdit.value ? '修改成功' : '创建成功'
-        })
-        closeForm()
-        getTableData()
+        // 构建请求数据 - sourceDataSourceId/targetDataSourceId 存的是 name，需要找到 ID
+        const sourceItem = sourceDataSourceList.value.find(i => i.name === taskForm.value.sourceDataSourceId)
+        const targetItem = targetDataSourceList.value.find(i => i.name === taskForm.value.targetDataSourceId)
+
+        const reqData = {
+          ...taskForm.value,
+          sourceDataSourceId: sourceItem ? sourceItem.ID : taskForm.value.sourceDataSourceId,
+          targetDataSourceId: targetItem ? targetItem.ID : taskForm.value.targetDataSourceId
+        }
+
+        // 如果有 ID 是更新，否则是创建
+        if (taskForm.value.id) {
+          // 更新
+          const res = await updateOfflineSync(reqData)
+          if (res.code === 0) {
+            ElMessage.success('修改成功')
+            closeForm()
+            getTableData()
+          }
+        } else {
+          // 创建
+          const res = await createOfflineSync(reqData)
+          if (res.code === 0) {
+            ElMessage.success('创建成功')
+            closeForm()
+            getTableData()
+          }
+        }
       }
     })
+  }
+
+  // 生成 SeaTunnel 脚本
+  const handleGenerateScript = async () => {
+    // 校验必填字段
+    if (!taskForm.value.taskName) {
+      ElMessage.warning('请输入任务名称')
+      return
+    }
+    if (!taskForm.value.sourceDataSourceId || !taskForm.value.sourceDatabase || !taskForm.value.sourceTable) {
+      ElMessage.warning('请完善源配置')
+      return
+    }
+    if (!taskForm.value.targetDataSourceId || !taskForm.value.targetDatabase || !taskForm.value.targetTable) {
+      ElMessage.warning('请完善目标配置')
+      return
+    }
+
+    // 构建请求数据 - sourceDataSourceId 存的是 name，需要找到 ID
+    const sourceItem = sourceDataSourceList.value.find(i => i.name === taskForm.value.sourceDataSourceId)
+    const targetItem = targetDataSourceList.value.find(i => i.name === taskForm.value.targetDataSourceId)
+
+    const reqData = {
+      taskName: taskForm.value.taskName,
+      sourceDataSourceId: sourceItem ? sourceItem.ID : taskForm.value.sourceDataSourceId,
+      sourceDatabase: taskForm.value.sourceDatabase,
+      sourceTable: taskForm.value.sourceTable,
+      targetDataSourceId: targetItem ? targetItem.ID : taskForm.value.targetDataSourceId,
+      targetDatabase: taskForm.value.targetDatabase,
+      targetTable: taskForm.value.targetTable
+    }
+
+    try {
+      const res = await generateScript(reqData)
+      if (res.code === 0) {
+        // 成功，显示生成的脚本内容
+        const scriptJson = JSON.stringify(res.data.script, null, 2)
+        ElMessageBox.alert(`<pre style="max-height: 400px; overflow: auto;">${scriptJson}</pre>`, 'SeaTunnel 脚本', {
+          confirmButtonText: '确定',
+          dangerouslyUseHTMLString: true
+        })
+      } else {
+        ElMessage.error(res.msg || '生成脚本失败')
+      }
+    } catch (e) {
+      console.error('生成脚本失败:', e)
+      ElMessage.error('生成脚本失败')
+    }
   }
 
   // 历史对话框相关
@@ -750,17 +873,19 @@
 
   // 获取表格数据
   const getTableData = async () => {
-    let filteredData = [...mockTableData]
-    if (searchInfo.value.taskName) {
-      filteredData = filteredData.filter(item => item.taskName.includes(searchInfo.value.taskName))
+    try {
+      const res = await getOfflineSyncList({
+        page: page.value,
+        pageSize: pageSize.value,
+        ...searchInfo.value
+      })
+      if (res.code === 0) {
+        tableData.value = res.data.list || []
+        total.value = res.data.total || 0
+      }
+    } catch (e) {
+      console.error('获取任务列表失败', e)
     }
-    if (searchInfo.value.status) {
-      filteredData = filteredData.filter(item => item.status === searchInfo.value.status)
-    }
-    total.value = filteredData.length
-    const start = (page.value - 1) * pageSize.value
-    const end = start + pageSize.value
-    tableData.value = filteredData.slice(start, end)
   }
 
   const onReset = () => {
@@ -797,11 +922,13 @@
       cancelButtonText: '取消',
       type: 'warning'
     }).then(async () => {
-      ElMessage({
-        type: 'success',
-        message: '删除成功'
-      })
-      getTableData()
+      const res = await deleteOfflineSync(row.ID)
+      if (res.code === 0) {
+        ElMessage.success('删除成功')
+        getTableData()
+      } else {
+        ElMessage.error('删除失败')
+      }
     })
   }
 
@@ -822,7 +949,7 @@
 
   // 查看历史
   const viewHistory = async (row) => {
-    currentTaskId.value = row.id
+    currentTaskId.value = row.ID
     historyTableData.value = mockHistoryData
     historyDialogVisible.value = true
   }
