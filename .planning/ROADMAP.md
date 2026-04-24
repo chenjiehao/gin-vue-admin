@@ -121,6 +121,15 @@ Plans:
 Plans:
 - [x] 16-01-PLAN.md — 分析前端表单与 SeaTunnel JSON 结构对比，确定需新增字段 — SHIPPED 2026-04-23
 
+### Phase 17: Apache SeaTunnel v2 REST API 研究
+
+**Goal:** 熟悉 SeaTunnel v2 REST API，为后续任务执行和监控做准备
+**Depends on:** Phase 16
+**Plans:** 1 plan — IN PROGRESS
+
+Plans:
+- [ ] 17-01-PLAN.md — 研究 SeaTunnel REST API 接口 — IN PROGRESS
+
 ---
 
 _For milestone details, see [.planning/milestones/v1.0-ROADMAP.md](.planning/milestones/v1.0-ROADMAP.md)_

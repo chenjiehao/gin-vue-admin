@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 16 shipped
-last_updated: "2026-04-24T05:42:18.578Z"
+stopped_at: Phase 17 added
+last_updated: "2026-04-24T09:30:00.000Z"
 last_activity: 2026-04-24
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 7
+  total_plans: 8
   completed_plans: 5
   percent: 100
 ---
@@ -21,22 +21,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-22)
 
 **Core value:** 提供一个干净的、可扩展的 RBAC 管理系统骨架
-**Current focus:** Phase 16 — Apache SeaTunnel任务脚本生成
+**Current focus:** Phase 17 — SeaTunnel REST API 研究
 
 ## Current Position
 
-Phase: 16
-Plan: Completed
-Status: Shipped
+Phase: 17
+Plan: In Progress
+Status: Researching
 Last activity: 2026-04-24
 
-Progress: [████████████████████] 100%
+Progress: [████████░░░░░░░░░░░░░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: N/A
 - Total execution time: 0.0 hours
 
@@ -60,6 +60,7 @@ Progress: [████████████████████] 100%
 | 14 | 3 | 3 | N/A |
 | 15 | 1 | 1 | N/A |
 | 16 | 1 | 1 | N/A |
+| 17 | 1 | 1 | N/A |
 
 *Updated after each plan completion*
 | Phase 12 P01 | 0 | 3 tasks | 3 files |
@@ -72,6 +73,7 @@ Progress: [████████████████████] 100%
 
 ### Roadmap Evolution
 
+- Phase 17 added: Apache SeaTunnel v2 REST API 研究
 - Phase 16 shipped: 实现Apache SeaTunnel任务脚本生成
 - Phase 15 shipped: 修复离线同步下拉框ID字段大小写问题并规范数据绑定
 - Phase 14 shipped: 修复离线同步的四级下拉框联动bug
@@ -92,7 +94,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-- None - all phases complete
+- [ ] 研究 SeaTunnel v2 REST API 接口
+- [ ] 确定 SeaTunnel Engine 部署方式
+- [ ] 测试作业提交接口
 
 ### Blockers/Concerns
 
@@ -100,5 +104,5 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-04-24T05:42:18.578Z
-Stopped at: Phase 16 shipped
+Last session: 2026-04-24T09:30:00.000Z
+Stopped at: Phase 17 added - researching SeaTunnel REST API
